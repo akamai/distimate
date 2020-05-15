@@ -17,6 +17,9 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     python_requires=">=3.6",
+    install_requires=[
+        "numpy",
+    ],
     extras_require={
         "dev": ["flake8", "pytest"],
     },
