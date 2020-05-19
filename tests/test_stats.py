@@ -25,7 +25,7 @@ class TestPDF:
         assert_func_values(
             pdf,
             [0.9, 1, 2, 10, 20, 100, 101],
-            [0, 0, np.nan, np.nan, np.nan, np.nan, np.nan],
+            [0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
         )
 
     def test_pdf_of_first_bin(self):
@@ -33,7 +33,7 @@ class TestPDF:
         assert_array_equal(pdf.x, [1, 10, 10, 100])
         assert_array_equal(pdf.y, [0, 0, 0, 0])
         assert_func_values(
-            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 0, 0, 0],
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, np.nan, 0, 0, 0, 0, 0],
         )
 
     def test_pdf_of_last_bin(self):
@@ -75,7 +75,9 @@ class TestPDF:
         assert_array_equal(pdf.x, [1, 10, 10, 100])
         assert_array_equal(pdf.y, [1 / 4 / 9, 1 / 4 / 9, 0, 0])
         assert_func_values(
-            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 1 / 4 / 9, 1 / 4 / 9, 0, 0, 0],
+            pdf,
+            [0.9, 1, 2, 10, 20, 100, 101],
+            [0, np.nan, 1 / 4 / 9, 1 / 4 / 9, 0, 0, 0],
         )
 
     def test_pdf_of_first_and_inner_bin(self):
@@ -83,7 +85,9 @@ class TestPDF:
         assert_array_equal(pdf.x, [1, 10, 10, 100])
         assert_array_equal(pdf.y, [0, 0, 1 / 4 / 90, 1 / 4 / 90])
         assert_func_values(
-            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 1 / 4 / 90, 1 / 4 / 90, 0],
+            pdf,
+            [0.9, 1, 2, 10, 20, 100, 101],
+            [0, np.nan, 0, 0, 1 / 4 / 90, 1 / 4 / 90, 0],
         )
 
     def test_pdf_of_first_and_last_bin(self):
@@ -91,7 +95,7 @@ class TestPDF:
         assert_array_equal(pdf.x, [1, 10, 10, 100])
         assert_array_equal(pdf.y, [0, 0, 0, 0])
         assert_func_values(
-            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 0, 0, np.nan],
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, np.nan, 0, 0, 0, 0, np.nan],
         )
 
     def test_pdf_of_last_and_prev_bin(self):

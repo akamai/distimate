@@ -3,47 +3,18 @@ import numpy as np
 
 def make_pdf(edges, hist):
     """Create a probability distribution function."""
-    # Ignore the first bucket because PDF function is not
-    # defined for non-continuous functions.
     edges = np.asarray(edges)
     hist = np.asarray(hist)
     total = np.sum(hist)
+    x = np.r_[edges[0], np.repeat(edges[1:-1], 2), edges[-1]]
     if total == 0:
-        total = np.nan
-    values = hist[1:-1] / np.diff(edges) / total
-    # PDF of last bin is nan if non-empty because of its infinite width.
-    right = 0 if (hist[-1] == 0 and total > 0) else np.nan
-    return ProbabilityDensityFunction(edges, values, left=0, right=right)
-
-
-class ProbabilityDensityFunction:
-    """Function defined by enumerated sample values."""
-
-    def __init__(self, edges, values, *, left=np.nan, right=np.nan):
-        self._edges = edges
-        self._values = values
-        self._left = left
-        self._right = right
-
-    @property
-    def x(self):
-        """X coordinate for plotting."""
-        return np.r_[self._edges[0], np.repeat(self._edges[1:-1], 2), self._edges[-1]]
-
-    @property
-    def y(self):
-        """Y coordinate for plotting."""
-        return np.repeat(self._values, 2)
-
-    def __call__(self, x):
-        """
-        Compute function value at the given point.
-
-        :param x: scalar value or Numpy array-like
-        :return: scalar value or Numpy array depending on *x*
-        """
-        indices = np.searchsorted(self._edges, x)
-        return np.r_[self._left, self._values, self._right][indices]
+        y = np.full_like(x, np.nan, dtype=np.float64)
+        initial = right = np.nan
+    else:
+        y = np.repeat(hist[1:-1] / np.diff(edges) / total, 2)
+        initial = 0 if hist[0] == 0 else np.nan
+        right = 0 if hist[-1] == 0 else np.nan
+    return ProbabilityDensityFunction(x, y, initial=initial, left=0, right=right)
 
 
 def make_cdf(edges, hist):
@@ -53,7 +24,7 @@ def make_cdf(edges, hist):
     cumulative = np.cumsum(hist, dtype=np.float64)
     if cumulative[-1] == 0:
         # When we have no samples then the function is undefined.
-        y = np.full_like(edges, np.nan, dtype=float)
+        y = np.full_like(edges, np.nan, dtype=np.float64)
         right = np.nan
     else:
         y = cumulative[:-1] / cumulative[-1]
@@ -122,3 +93,19 @@ class InterpolatingFunction:
         :return: scalar value or Numpy array depending on *x*
         """
         return self._interp(v, self.x, self.y, left=self._left, right=self._right)
+
+
+class ProbabilityDensityFunction(InterpolatingFunction):
+    def __init__(self, x, y, *, initial=np.nan, left=np.nan, right=np.nan):
+        super().__init__(x, y, left=left, right=right, interp=interp_left)
+        self._initial = initial
+
+    def __call__(self, x):
+        """
+        Compute function value at the given point.
+
+        :param x: scalar value or Numpy array-like
+        :return: scalar value or Numpy array depending on *x*
+        """
+        y = super().__call__(x)
+        return np.where(x == self.x[0], self._initial, y)
