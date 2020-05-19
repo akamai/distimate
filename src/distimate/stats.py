@@ -6,21 +6,29 @@ def make_pdf(edges, hist):
     edges = np.asarray(edges)
     hist = np.asarray(hist)
     total = np.sum(hist)
-
     if total == 0:
         x = edges[[0, -1]]
         y = np.full_like(x, np.nan, dtype=np.float64)
-        initial = right = np.nan
-    else:
-        x_all = np.r_[edges[0], np.repeat(edges[1:-1], 2), edges[-1]]
-        y_all = np.repeat(hist[1:-1] / np.diff(edges) / total, 2)
-        dups = (y_all[:-2] == y_all[1:-1]) & (y_all[1:-1] == y_all[2:])
-        mask = np.r_[True, ~dups, True]
-        x = x_all[mask]
-        y = y_all[mask]
-        initial = 0 if hist[0] == 0 else np.nan
-        right = 0 if hist[-1] == 0 else np.nan
-    return ProbabilityDensityFunction(x, y, initial=initial, left=0, right=right)
+        return InterpolatingFunction(x, y, left=0)
+    # Values in the first bucket should be equal to the first edge.
+    # Because PDF is not defined for discrete distributions,
+    # the value at the first edge is undefined if nonzero.
+    head = 0 if hist[0] == 0 else np.nan
+    # PDF values are relative frequencies normalized by bucket width.
+    body = hist[1:-1] / np.diff(edges) / total
+    # Because we cannot create a continuous PDF function from a histogram,
+    # we have to repeat all values twice to plot staircase.
+    x_all = np.repeat(edges, 2)[:-1]
+    y_all = np.r_[head, np.repeat(body, 2)]
+    # Remove unnecessary points: A step does not change height can be removed.
+    dups = (y_all[:-2] == y_all[1:-1]) & (y_all[1:-1] == y_all[2:])
+    mask = np.r_[True, ~dups, True]
+    x = x_all[mask]
+    y = y_all[mask]
+    # If the last bucket is nonempty we cannot compute its PDF
+    # because it has unknown (infinite) width.
+    right = 0 if hist[-1] == 0 else np.nan
+    return InterpolatingFunction(x, y, left=0, right=right, interp=interp_left)
 
 
 def make_cdf(edges, hist):
@@ -99,19 +107,3 @@ class InterpolatingFunction:
         :return: scalar value or Numpy array depending on *x*
         """
         return self._interp(v, self.x, self.y, left=self._left, right=self._right)
-
-
-class ProbabilityDensityFunction(InterpolatingFunction):
-    def __init__(self, x, y, *, initial=np.nan, left=np.nan, right=np.nan):
-        super().__init__(x, y, left=left, right=right, interp=interp_left)
-        self._initial = initial
-
-    def __call__(self, x):
-        """
-        Compute function value at the given point.
-
-        :param x: scalar value or Numpy array-like
-        :return: scalar value or Numpy array depending on *x*
-        """
-        y = super().__call__(x)
-        return np.where(x == self.x[0], self._initial, y)
