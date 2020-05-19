@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose, assert_array_equal
 
-from distimate.stats import make_cdf, make_quantile
+from distimate.stats import make_cdf, make_pdf, make_quantile
 
 
 def assert_func_values(f, x, y):
@@ -12,6 +12,129 @@ def assert_func_values(f, x, y):
             yv, nan_ok=True
         ), f"Function value at {xv!r} should be {yv!r}, not {actual!r}."
     assert_allclose(f(x), y)
+
+
+class TestPDF:
+
+    edges = [1, 10, 100, 1000]
+
+    def test_pdf_of_empty(self):
+        pdf = make_pdf([1, 10, 100], [0, 0, 0, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [np.nan, np.nan, np.nan, np.nan])
+        assert_func_values(
+            pdf,
+            [0.9, 1, 2, 10, 20, 100, 101],
+            [0, 0, np.nan, np.nan, np.nan, np.nan, np.nan],
+        )
+
+    def test_pdf_of_first_bin(self):
+        pdf = make_pdf([1, 10, 100], [7, 0, 0, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [0, 0, 0, 0])
+        assert_func_values(
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 0, 0, 0],
+        )
+
+    def test_pdf_of_last_bin(self):
+        pdf = make_pdf([1, 10, 100], [0, 0, 0, 7])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [0, 0, 0, 0])
+        assert_func_values(
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 0, 0, np.nan],
+        )
+
+    def test_pdf_of_inner_bin(self):
+        pdf = make_pdf([1, 10, 100, 1000], [0, 0, 7, 0, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100, 100, 1000])
+        assert_array_equal(pdf.y, [0, 0, 1 / 90, 1 / 90, 0, 0])
+        assert_func_values(
+            pdf,
+            [0.9, 1, 2, 10, 20, 100, 200, 1000, 1001],
+            [0, 0, 0, 0, 1 / 90, 1 / 90, 0, 0, 0],
+        )
+
+    def test_pdf_of_first_inner_bin(self):
+        pdf = make_pdf([1, 10, 100], [0, 7, 0, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_allclose(pdf.y, [1 / 9, 1 / 9, 0, 0])
+        assert_func_values(
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 1 / 9, 1 / 9, 0, 0, 0],
+        )
+
+    def test_pdf_of_last_inner_bin(self):
+        pdf = make_pdf([1, 10, 100], [0, 0, 7, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_allclose(pdf.y, [0, 0, 1 / 90, 1 / 90])
+        assert_func_values(
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 1 / 90, 1 / 90, 0],
+        )
+
+    def test_pdf_of_first_and_next_bin(self):
+        pdf = make_pdf([1, 10, 100], [3, 1, 0, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [1 / 4 / 9, 1 / 4 / 9, 0, 0])
+        assert_func_values(
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 1 / 4 / 9, 1 / 4 / 9, 0, 0, 0],
+        )
+
+    def test_pdf_of_first_and_inner_bin(self):
+        pdf = make_pdf([1, 10, 100], [3, 0, 1, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [0, 0, 1 / 4 / 90, 1 / 4 / 90])
+        assert_func_values(
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 1 / 4 / 90, 1 / 4 / 90, 0],
+        )
+
+    def test_pdf_of_first_and_last_bin(self):
+        pdf = make_pdf([1, 10, 100], [3, 0, 0, 1])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [0, 0, 0, 0])
+        assert_func_values(
+            pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 0, 0, np.nan],
+        )
+
+    def test_pdf_of_last_and_prev_bin(self):
+        pdf = make_pdf([1, 10, 100], [0, 0, 3, 1])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [0, 0, 3 / 4 / 90, 3 / 4 / 90])
+        assert_func_values(
+            pdf,
+            [0.9, 1, 2, 10, 20, 100, 101],
+            [0, 0, 0, 0, 3 / 4 / 90, 3 / 4 / 90, np.nan],
+        )
+
+    def test_pdf_of_last_and_inner_bin(self):
+        pdf = make_pdf([1, 10, 100], [0, 3, 0, 1])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [3 / 4 / 9, 3 / 4 / 9, 0, 0])
+        assert_func_values(
+            pdf,
+            [0.9, 1, 2, 10, 20, 100, 101],
+            [0, 0, 3 / 4 / 9, 3 / 4 / 9, 0, 0, np.nan],
+        )
+
+    def test_pdf_of_inner_bins(self):
+        pdf = make_pdf([1, 10, 100], [0, 3, 1, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100])
+        assert_array_equal(pdf.y, [3 / 4 / 9, 3 / 4 / 9, 1 / 4 / 90, 1 / 4 / 90])
+        assert_func_values(
+            pdf,
+            [0.9, 1, 2, 10, 20, 100, 101],
+            [0, 0, 3 / 4 / 9, 3 / 4 / 9, 1 / 4 / 90, 1 / 4 / 90, 0],
+        )
+
+    def test_pdf_of_inner_bins_with_gap(self):
+        pdf = make_pdf([1, 10, 100, 1000], [0, 3, 0, 1, 0])
+        assert_array_equal(pdf.x, [1, 10, 10, 100, 100, 1000])
+        assert_array_equal(
+            pdf.y, [3 / 4 / 9, 3 / 4 / 9, 0, 0, 1 / 4 / 900, 1 / 4 / 900]
+        )
+        assert_func_values(
+            pdf,
+            [0.9, 1, 2, 10, 20, 100, 200, 1000, 1001],
+            [0, 0, 3 / 4 / 9, 3 / 4 / 9, 0, 0, 1 / 4 / 900, 1 / 4 / 900, 0],
+        )
 
 
 class TestCDF:

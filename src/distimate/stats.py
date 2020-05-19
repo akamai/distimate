@@ -1,6 +1,51 @@
 import numpy as np
 
 
+def make_pdf(edges, hist):
+    """Create a probability distribution function."""
+    # Ignore the first bucket because PDF function is not
+    # defined for non-continuous functions.
+    edges = np.asarray(edges)
+    hist = np.asarray(hist)
+    total = np.sum(hist)
+    if total == 0:
+        total = np.nan
+    values = hist[1:-1] / np.diff(edges) / total
+    # PDF of last bin is nan if non-empty because of its infinite width.
+    right = 0 if (hist[-1] == 0 and total > 0) else np.nan
+    return ProbabilityDensityFunction(edges, values, left=0, right=right)
+
+
+class ProbabilityDensityFunction:
+    """Function defined by enumerated sample values."""
+
+    def __init__(self, edges, values, *, left=np.nan, right=np.nan):
+        self._edges = edges
+        self._values = values
+        self._left = left
+        self._right = right
+
+    @property
+    def x(self):
+        """X coordinate for plotting."""
+        return np.r_[self._edges[0], np.repeat(self._edges[1:-1], 2), self._edges[-1]]
+
+    @property
+    def y(self):
+        """Y coordinate for plotting."""
+        return np.repeat(self._values, 2)
+
+    def __call__(self, x):
+        """
+        Compute function value at the given point.
+
+        :param x: scalar value or Numpy array-like
+        :return: scalar value or Numpy array depending on *x*
+        """
+        indices = np.searchsorted(self._edges, x)
+        return np.r_[self._left, self._values, self._right][indices]
+
+
 def make_cdf(edges, hist):
     """Create a cumulative distribution function (CDF)."""
     edges = np.asarray(edges)
