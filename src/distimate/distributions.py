@@ -1,5 +1,7 @@
 import numpy as np
 
+from distimate.stats import make_cdf, make_pdf, make_quantile
+
 
 class Distribution:
     """
@@ -71,27 +73,6 @@ class Distribution:
         """Return a total weight of samples in this distribution."""
         return self.hist.sum()
 
-    def mean(self):
-        """
-        Estimate mean of this distribution.
-
-        Return NaN for distributions with no samples.
-
-        - Inner bins are represented by their midpoint (assume that
-          samples are evenly distributed in bins).
-        - The left outer bin is represented by the leftmost edge
-          (assume that there are no samples bellow the supported range).
-        - Return NaN if the rightmost bin is non-empty (assume that
-          samples above the supported range can have any value).
-        """
-        total = self.hist.sum()
-        if total == 0 or self.hist[-1] != 0:
-            return np.nan
-        left = np.r_[self.edges[0], self.edges[:-1]]
-        right = self.edges
-        middle = (left + right) / 2
-        return np.sum(self.hist[:-1] * middle) / total
-
     def add(self, value, weight=None):
         """
         Add a new item to this distribution.
@@ -122,3 +103,105 @@ class Distribution:
         # Cannot use self._hist[index] += weights because it does
         # not accumulate if index contains duplicate values.
         np.add.at(self.hist, index, weights)
+
+    def mean(self):
+        """
+        Estimate mean of this distribution.
+
+        Return NaN for distributions with no samples.
+
+        - Inner bins are represented by their midpoint (assume that
+          samples are evenly distributed in bins).
+        - The left outer bin is represented by the leftmost edge
+          (assume that there are no samples bellow the supported range).
+        - Return NaN if the rightmost bin is not empty.
+        """
+        total = self.hist.sum()
+        if total == 0 or self.hist[-1] != 0:
+            return np.nan
+        left = np.r_[self.edges[0], self.edges[:-1]]
+        right = self.edges
+        middle = (left + right) / 2
+        return np.sum(self.hist[:-1] * middle) / total
+
+    @property
+    def pdf(self):
+        """
+        Probability density function (PDF) of this distribution.
+
+        Returns a callable object with ``x`` and ``y`` attributes.
+        The attributes can be used for plotting, or the function
+        can be called to estimate a PDF value at arbitrary point.
+        The function accepts a single value or an array-like.
+
+        The PDF values provides relative likelihoods of various
+        distribution values. It is computed from a histogram
+        by normalizing relative frequencies by bucket widths.
+
+        - For inputs lesser than the first edges,
+          the PDF will always return zero.
+        - For inputs equal to the first edge (typically zero),
+          the PDF function will return zero or NaN,
+          depending on whether the first histogram bucket is empty.
+          This is because the PDF is not defined for discrete distributions.
+        - For inputs in each of inner histogram buckets (which are left-open),
+          one value is returned. On a plot, this will form a staircase.
+          To plot a non-continuous distribution, x-values are be duplicated.
+        - For inputs greater than the last edge,
+          the PDF returns either zero or NaN,
+          depending on whether the last histogram bucket is empty.
+        """
+        return make_pdf(self.edges, self.hist)
+
+    @property
+    def cdf(self):
+        """
+        Cumulative distribution function (CDF) of this distribution.
+
+        Returns a callable object with ``x`` and ``y`` attributes.
+        The attributes can be used for plotting, or the function
+        can be called to estimate a CDF value at arbitrary point.
+        The function accepts a single value or an array-like.
+
+        ``cdf(x)`` returns a probability that a distribution
+        value will be lesser than or equal to ``x``.
+
+        - For inputs lesser than the first edge,
+          the CDF will always return zero.
+        - Function return exact values for inputs equal to histogram edges.
+          Values inside histogram buckets are interpolated.
+        - CDF of the first edge can be used to obtain how many
+          samples were equal to that edge (typically zero)
+        - For inputs greater than the last edge,
+          the PDF returns either one or NaN,
+          depending on whether the last histogram bucket is empty.
+        """
+        return make_cdf(self.edges, self.hist)
+
+    @property
+    def quantile(self):
+        """
+        Quantile function of this distribution.
+
+        Returns a callable object with ``x`` and ``y`` attributes.
+        The attributes can be used for plotting, or the function
+        can be called to estimate a quantile value at arbitrary point.
+        The function accepts a single value or an array-like.
+
+        ``quantile(q)`` returns the smallest ``x`` for which ``cdf(x) >=  q``.
+
+        - If the first histogram bucket is not empty,
+          the quantile value can return the first edge for many inputs.
+        - If an inner histogram bucket is empty,
+          then the quantile value can be ambiguous.
+          In that case, duplicate x-values will be plotted. When called,
+          the quantile function will return the lowest of possible results.
+        - The function returns NaN for values outside of the <0, 1> range.
+        - When called with zero,
+          returns the left edge of the smallest non-empty bucket.
+          If the first bucket is not empty, returns the first edge.
+        - When called with one,
+          returns the right edge of the greatest non-empty bucket.
+          If the last bucket is not empty, returns NaN.
+        """
+        return make_quantile(self.edges, self.hist)

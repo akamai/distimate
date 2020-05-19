@@ -2,7 +2,8 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_equal
 
-from distimate import Distribution
+from distimate.distributions import Distribution
+
 
 EDGES = [1, 10, 100]
 
@@ -75,26 +76,6 @@ class TestDistribution:
         dist = Distribution(EDGES, [1, 2, 0, 4])
         assert dist.size() == 7
 
-    def test_mean_of_empty(self):
-        dist = Distribution(EDGES, [0, 0, 0, 0])
-        assert np.isnan(dist.mean())
-
-    def test_mean_of_first_bin(self):
-        dist = Distribution(EDGES, [7, 0, 0, 0])
-        assert dist.mean() == 1
-
-    def test_mean_of_inner_bin(self):
-        dist = Distribution(EDGES, [0, 7, 0, 0])
-        assert dist.mean() == 5.5
-
-    def test_mean_of_last_bin(self):
-        dist = Distribution(EDGES, [0, 0, 0, 7])
-        assert np.isnan(dist.mean())
-
-    def test_mean_of_multiple_bins(self):
-        dist = Distribution(EDGES, [3, 1, 0, 0])
-        assert dist.mean() == pytest.approx((3 * 1 + 1 * 5.5) / 4)
-
     def test_add_lt_first_edge(self):
         dist = Distribution(EDGES)
         dist.add(0.9)
@@ -156,3 +137,67 @@ class TestDistribution:
         with pytest.raises(ValueError) as exc_info:
             dist.update([[1, 1, 17]])
         assert str(exc_info.value) == "Values must be 1-D array-like."
+
+    def test_mean_of_empty(self):
+        dist = Distribution(EDGES, [0, 0, 0, 0])
+        assert np.isnan(dist.mean())
+
+    def test_mean_of_first_bin(self):
+        dist = Distribution(EDGES, [7, 0, 0, 0])
+        assert dist.mean() == 1
+
+    def test_mean_of_inner_bin(self):
+        dist = Distribution(EDGES, [0, 7, 0, 0])
+        assert dist.mean() == 5.5
+
+    def test_mean_of_last_bin(self):
+        dist = Distribution(EDGES, [0, 0, 0, 7])
+        assert np.isnan(dist.mean())
+
+    def test_mean_of_multiple_bins(self):
+        dist = Distribution(EDGES, [3, 1, 0, 0])
+        assert dist.mean() == pytest.approx((3 * 1 + 1 * 5.5) / 4)
+
+    def test_pdf_of_empty(self):
+        dist = Distribution(EDGES, [0, 0, 0, 0])
+        pdf = dist.pdf
+        assert_array_equal(pdf.x, [1, 100])
+        assert_array_equal(pdf.y, [np.nan, np.nan])
+        assert_array_equal(pdf([0, 1, 55]), [0, np.nan, np.nan])
+
+    def test_pdf_of_full(self):
+        dist = Distribution(EDGES, [3, 0, 1, 0])
+        pdf = dist.pdf
+        assert_array_equal(pdf.x, [1, 1, 10, 10, 100])
+        assert_array_equal(pdf.y, [np.nan, 0, 0, 1 / 4 / 90, 1 / 4 / 90])
+        assert_array_equal(pdf([0, 1, 55]), [0, np.nan, 1 / 4 / 90])
+
+    def test_cdf_of_empty(self):
+        dist = Distribution(EDGES, [0, 0, 0, 0])
+        cdf = dist.cdf
+        assert_array_equal(cdf.x, EDGES)
+        assert_array_equal(cdf.y, [np.nan, np.nan, np.nan])
+        assert_array_equal(cdf([0, 1, 55]), [0, np.nan, np.nan])
+
+    def test_cdf_of_full(self):
+        dist = Distribution(EDGES, [3, 0, 1, 0])
+        cdf = dist.cdf
+        assert_array_equal(cdf.x, EDGES)
+        assert_array_equal(cdf.y, [3 / 4, 3 / 4, 1])
+        assert_array_equal(cdf([0, 1, 55]), [0, 3 / 4, 7 / 8])
+
+    def test_quantile_of_empty(self):
+        dist = Distribution(EDGES, [0, 0, 0, 0])
+        quantile = dist.quantile
+        assert_array_equal(quantile.x, [0, 1])
+        assert_array_equal(quantile.y, [np.nan, np.nan])
+        assert_array_equal(
+            quantile([-1, 0, 1 / 2, 7 / 8]), [np.nan, np.nan, np.nan, np.nan]
+        )
+
+    def test_quantile_of_full(self):
+        dist = Distribution(EDGES, [3, 0, 1, 0])
+        quantile = dist.quantile
+        assert_array_equal(quantile.x, [0, 3 / 4, 3 / 4, 1])
+        assert_array_equal(quantile.y, [1, 1, 10, 100])
+        assert_array_equal(quantile([-1, 0, 1 / 2, 7 / 8]), [np.nan, 1, 1, 55])
