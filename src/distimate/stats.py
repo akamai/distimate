@@ -2,11 +2,12 @@ import numpy as np
 
 
 def make_pdf(edges, hist):
-    """Create a probability distribution function."""
+    """Create a probability density function (PDF)."""
     edges = np.asarray(edges)
     hist = np.asarray(hist)
     total = np.sum(hist)
     if total == 0:
+        # When we have no samples then the function is undefined.
         x = edges[[0, -1]]
         y = np.full_like(x, np.nan, dtype=np.float64)
         return InterpolatingFunction(x, y, left=0)
@@ -25,7 +26,7 @@ def make_pdf(edges, hist):
     mask = np.r_[True, ~dups, True]
     x = x_all[mask]
     y = y_all[mask]
-    # If the last bucket is nonempty we cannot compute its PDF
+    # If the last bucket is nonempty, we cannot compute its PDF
     # because it has unknown (infinite) width.
     right = 0 if hist[-1] == 0 else np.nan
     return InterpolatingFunction(x, y, left=0, right=right, interp=interp_left)
@@ -39,10 +40,9 @@ def make_cdf(edges, hist):
     if cumulative[-1] == 0:
         # When we have no samples then the function is undefined.
         y = np.full_like(edges, np.nan, dtype=np.float64)
-        right = np.nan
-    else:
-        y = cumulative[:-1] / cumulative[-1]
-        right = 1 if hist[-1] == 0 else np.nan
+        return InterpolatingFunction(edges, y, left=0)
+    y = cumulative[:-1] / cumulative[-1]
+    right = 1 if hist[-1] == 0 else np.nan
     return InterpolatingFunction(edges, y, left=0, right=right)
 
 
@@ -57,18 +57,18 @@ def make_quantile(edges, hist):
         # if all samples are in the last bucket (greater than the last edge).
         x = np.array([0, 1], dtype=np.float64)
         y = np.array([np.nan, np.nan], dtype=np.float64)
-    else:
-        normed = cumulative[:-1] / cumulative[-1]
-        # Make sure that x values start at zero and end at one.
-        x_candidates = np.r_[0, normed, 1]
-        y_candidates = np.r_[edges[0], edges, np.nan]
-        # If there are vertical chains of points with same x value,
-        # keep only the first and the last point of each chain.
-        # Heading or trailing chains are removed completely.
-        non_zero = np.r_[False, hist != 0, False]
-        mask = non_zero[:-1] | non_zero[1:]
-        x = x_candidates[mask]
-        y = y_candidates[mask]
+        return InterpolatingFunction(x, y)
+    cdf = cumulative[:-1] / cumulative[-1]
+    # Make sure that x values start at zero and end at one.
+    x_all = np.r_[0, cdf, 1]
+    y_all = np.r_[edges[0], edges, np.nan]
+    # If there are vertical chains of points with same x value,
+    # keep only the first and the last point of each chain.
+    # Heading or trailing chains are removed completely.
+    diffs = np.r_[False, hist != 0, False]
+    mask = diffs[:-1] | diffs[1:]
+    x = x_all[mask]
+    y = y_all[mask]
     return InterpolatingFunction(x, y, interp=interp_left)
 
 
