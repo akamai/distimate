@@ -6,12 +6,18 @@ def make_pdf(edges, hist):
     edges = np.asarray(edges)
     hist = np.asarray(hist)
     total = np.sum(hist)
-    x = np.r_[edges[0], np.repeat(edges[1:-1], 2), edges[-1]]
+
     if total == 0:
+        x = edges[[0, -1]]
         y = np.full_like(x, np.nan, dtype=np.float64)
         initial = right = np.nan
     else:
-        y = np.repeat(hist[1:-1] / np.diff(edges) / total, 2)
+        x_all = np.r_[edges[0], np.repeat(edges[1:-1], 2), edges[-1]]
+        y_all = np.repeat(hist[1:-1] / np.diff(edges) / total, 2)
+        dups = (y_all[:-2] == y_all[1:-1]) & (y_all[1:-1] == y_all[2:])
+        mask = np.r_[True, ~dups, True]
+        x = x_all[mask]
+        y = y_all[mask]
         initial = 0 if hist[0] == 0 else np.nan
         right = 0 if hist[-1] == 0 else np.nan
     return ProbabilityDensityFunction(x, y, initial=initial, left=0, right=right)

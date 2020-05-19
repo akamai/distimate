@@ -20,8 +20,8 @@ class TestPDF:
 
     def test_pdf_of_empty(self):
         pdf = make_pdf([1, 10, 100], [0, 0, 0, 0])
-        assert_array_equal(pdf.x, [1, 10, 10, 100])
-        assert_array_equal(pdf.y, [np.nan, np.nan, np.nan, np.nan])
+        assert_array_equal(pdf.x, [1, 100])
+        assert_array_equal(pdf.y, [np.nan, np.nan])
         assert_func_values(
             pdf,
             [0.9, 1, 2, 10, 20, 100, 101],
@@ -30,16 +30,16 @@ class TestPDF:
 
     def test_pdf_of_first_bin(self):
         pdf = make_pdf([1, 10, 100], [7, 0, 0, 0])
-        assert_array_equal(pdf.x, [1, 10, 10, 100])
-        assert_array_equal(pdf.y, [0, 0, 0, 0])
+        assert_array_equal(pdf.x, [1, 100])
+        assert_array_equal(pdf.y, [0, 0])
         assert_func_values(
             pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, np.nan, 0, 0, 0, 0, 0],
         )
 
     def test_pdf_of_last_bin(self):
         pdf = make_pdf([1, 10, 100], [0, 0, 0, 7])
-        assert_array_equal(pdf.x, [1, 10, 10, 100])
-        assert_array_equal(pdf.y, [0, 0, 0, 0])
+        assert_array_equal(pdf.x, [1, 100])
+        assert_array_equal(pdf.y, [0, 0])
         assert_func_values(
             pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, 0, 0, 0, 0, 0, np.nan],
         )
@@ -92,8 +92,8 @@ class TestPDF:
 
     def test_pdf_of_first_and_last_bin(self):
         pdf = make_pdf([1, 10, 100], [3, 0, 0, 1])
-        assert_array_equal(pdf.x, [1, 10, 10, 100])
-        assert_array_equal(pdf.y, [0, 0, 0, 0])
+        assert_array_equal(pdf.x, [1, 100])
+        assert_array_equal(pdf.y, [0, 0])
         assert_func_values(
             pdf, [0.9, 1, 2, 10, 20, 100, 101], [0, np.nan, 0, 0, 0, 0, np.nan],
         )
