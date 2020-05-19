@@ -8,25 +8,25 @@ class Distribution:
     Statistical distribution represented by its histogram.
 
     :param edges: 1-D array-like
-    :param hist: 1-D array-like, one item longer than *edges*
+    :param values: 1-D array-like, one item longer than *edges*
     """
 
-    __slots__ = ("edges", "hist")
+    __slots__ = ("edges", "values")
 
     dtype = np.float64
 
-    def __init__(self, edges, hist=None):
+    def __init__(self, edges, values=None):
         self.edges = np.asarray(edges)
         size = len(self.edges) + 1
-        if hist is None:
-            self.hist = np.zeros(size, dtype=self.dtype)
+        if values is None:
+            self.values = np.zeros(size, dtype=self.dtype)
         else:
-            self.hist = np.asarray(hist, dtype=self.dtype)
-            if self.hist.ndim != 1:
+            self.values = np.asarray(values, dtype=self.dtype)
+            if self.values.ndim != 1:
                 raise ValueError("Histogram must be 1-D array-like.")
-            if len(self.hist) != size:
+            if len(self.values) != size:
                 raise ValueError("Histogram must have len(edges) + 1 items.")
-            if not np.all(self.hist >= 0):
+            if not np.all(self.values >= 0):
                 raise ValueError("Histogram values must not be negative.")
 
     def __repr__(self):
@@ -36,30 +36,30 @@ class Distribution:
     def __eq__(self, other):
         """Return whether distribution histograms are equal."""
         if isinstance(other, Distribution):
-            return np.array_equal(self.hist, other.hist)
+            return np.array_equal(self.values, other.values)
         return NotImplemented
 
     def __add__(self, other):
         """Combine this distribution with other distribution."""
         if isinstance(other, Distribution):
-            values = self.hist + other.hist
+            values = self.values + other.values
             return Distribution(self.edges, values)
         return NotImplemented
 
     def __iadd__(self, other):
         """Combine this distribution with other distribution inplace."""
         if isinstance(other, Distribution):
-            self.hist += other.hist
+            self.values += other.values
             return self
         return NotImplemented
 
-    def to_hist(self):
+    def to_histogram(self):
         """
         Return a histogram of this distribution as a NumPy array.
 
         :return: :class:`numpy.array`
         """
-        return self.hist.copy()
+        return self.values.copy()
 
     def to_cumulative(self):
         """
@@ -67,11 +67,11 @@ class Distribution:
 
         :return: :class:`numpy.array`
         """
-        return np.cumsum(self.hist)
+        return np.cumsum(self.values)
 
     def size(self):
         """Return a total weight of samples in this distribution."""
-        return self.hist.sum()
+        return self.values.sum()
 
     def add(self, value, weight=None):
         """
@@ -85,7 +85,7 @@ class Distribution:
         if weight is None:
             weight = 1
         index = self.edges.searchsorted(value)
-        self.hist[index] += weight
+        self.values[index] += weight
 
     def update(self, values, weights=None):
         """
@@ -102,7 +102,7 @@ class Distribution:
         index = self.edges.searchsorted(values)
         # Cannot use self._hist[index] += weights because it does
         # not accumulate if index contains duplicate values.
-        np.add.at(self.hist, index, weights)
+        np.add.at(self.values, index, weights)
 
     def mean(self):
         """
@@ -116,13 +116,13 @@ class Distribution:
           (assume that there are no samples bellow the supported range).
         - Return NaN if the rightmost bin is not empty.
         """
-        total = self.hist.sum()
-        if total == 0 or self.hist[-1] != 0:
+        total = self.values.sum()
+        if total == 0 or self.values[-1] != 0:
             return np.nan
         left = np.r_[self.edges[0], self.edges[:-1]]
         right = self.edges
         middle = (left + right) / 2
-        return np.sum(self.hist[:-1] * middle) / total
+        return np.sum(self.values[:-1] * middle) / total
 
     @property
     def pdf(self):
@@ -151,7 +151,7 @@ class Distribution:
           the PDF returns either zero or NaN,
           depending on whether the last histogram bucket is empty.
         """
-        return make_pdf(self.edges, self.hist)
+        return make_pdf(self.edges, self.values)
 
     @property
     def cdf(self):
@@ -176,7 +176,7 @@ class Distribution:
           the PDF returns either one or NaN,
           depending on whether the last histogram bucket is empty.
         """
-        return make_cdf(self.edges, self.hist)
+        return make_cdf(self.edges, self.values)
 
     @property
     def quantile(self):
@@ -204,4 +204,4 @@ class Distribution:
           returns the right edge of the greatest non-empty bucket.
           If the last bucket is not empty, returns NaN.
         """
-        return make_quantile(self.edges, self.hist)
+        return make_quantile(self.edges, self.values)

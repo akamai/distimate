@@ -4,7 +4,6 @@ from numpy.testing import assert_array_equal
 
 from distimate.distributions import Distribution
 
-
 EDGES = [1, 10, 100]
 
 
@@ -26,17 +25,17 @@ class TestDistribution:
 
     def test_empty(self):
         dist = Distribution(EDGES)
-        assert_array_equal(dist.hist, [0, 0, 0, 0])
-        assert_array_equal(dist.to_hist(), [0, 0, 0, 0])
+        assert_array_equal(dist.values, [0, 0, 0, 0])
+        assert_array_equal(dist.to_histogram(), [0, 0, 0, 0])
         assert_array_equal(dist.to_cumulative(), [0, 0, 0, 0])
-        assert dist.hist.dtype == np.float64
+        assert dist.values.dtype == np.float64
 
     def test_full(self):
         dist = Distribution(EDGES, [1, 2, 0, 4])
-        assert_array_equal(dist.hist, [1, 2, 0, 4])
-        assert_array_equal(dist.to_hist(), [1, 2, 0, 4])
+        assert_array_equal(dist.values, [1, 2, 0, 4])
+        assert_array_equal(dist.to_histogram(), [1, 2, 0, 4])
         assert_array_equal(dist.to_cumulative(), [1, 3, 3, 7])
-        assert dist.hist.dtype == np.float64
+        assert dist.values.dtype == np.float64
 
     def test_repr_of_empty(self):
         dist = Distribution(EDGES)
@@ -60,11 +59,11 @@ class TestDistribution:
 
     def test_add_distribution(self):
         dist = Distribution(EDGES, [1, 2, 0, 0]) + Distribution(EDGES, [0, 2, 0, 4])
-        assert_array_equal(dist.hist, [1, 4, 0, 4])
+        assert_array_equal(dist.values, [1, 4, 0, 4])
 
     def test_add_distribution_in_place(self):
         dist = Distribution(EDGES, [1, 2, 0, 0])
-        hist = dist.hist
+        hist = dist.values
         dist += Distribution(EDGES, [0, 2, 0, 4])
         assert_array_equal(hist, [1, 4, 0, 4])
 
@@ -79,37 +78,37 @@ class TestDistribution:
     def test_add_lt_first_edge(self):
         dist = Distribution(EDGES)
         dist.add(0.9)
-        assert_array_equal(dist.hist, [1, 0, 0, 0])
+        assert_array_equal(dist.values, [1, 0, 0, 0])
 
     def test_add_eq_first_edge(self):
         dist = Distribution(EDGES)
         dist.add(1)
-        assert_array_equal(dist.hist, [1, 0, 0, 0])
+        assert_array_equal(dist.values, [1, 0, 0, 0])
 
     def test_add_gt_first_edge(self):
         dist = Distribution(EDGES)
         dist.add(1.1)
-        assert_array_equal(dist.hist, [0, 1, 0, 0])
+        assert_array_equal(dist.values, [0, 1, 0, 0])
 
     def test_add_lt_last_edge(self):
         dist = Distribution(EDGES)
         dist.add(99)
-        assert_array_equal(dist.hist, [0, 0, 1, 0])
+        assert_array_equal(dist.values, [0, 0, 1, 0])
 
     def test_add_eq_last_edge(self):
         dist = Distribution(EDGES)
         dist.add(100)
-        assert_array_equal(dist.hist, [0, 0, 1, 0])
+        assert_array_equal(dist.values, [0, 0, 1, 0])
 
     def test_add_gt_last_edge(self):
         dist = Distribution(EDGES)
         dist.add(101)
-        assert_array_equal(dist.hist, [0, 0, 0, 1])
+        assert_array_equal(dist.values, [0, 0, 0, 1])
 
     def test_add_with_weight(self):
         dist = Distribution(EDGES)
         dist.add(17, 7)
-        assert_array_equal(dist.hist, [0, 0, 7, 0])
+        assert_array_equal(dist.values, [0, 0, 7, 0])
 
     def test_add_not_scalar(self):
         dist = Distribution(EDGES)
@@ -120,17 +119,17 @@ class TestDistribution:
     def test_update(self):
         dist = Distribution(EDGES)
         dist.update([1, 1, 17])
-        assert_array_equal(dist.hist, [2, 0, 1, 0])
+        assert_array_equal(dist.values, [2, 0, 1, 0])
 
     def test_update_with_weight(self):
         dist = Distribution(EDGES)
         dist.update([1, 1, 17], weights=10)
-        assert_array_equal(dist.hist, [20, 0, 10, 0])
+        assert_array_equal(dist.values, [20, 0, 10, 0])
 
     def test_update_with_multiple_weights(self):
         dist = Distribution(EDGES)
         dist.update([1, 1, 17], weights=[3, 2, 1])
-        assert_array_equal(dist.hist, [5, 0, 1, 0])
+        assert_array_equal(dist.values, [5, 0, 1, 0])
 
     def test_update_not_1d(self):
         dist = Distribution(EDGES)
