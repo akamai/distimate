@@ -155,6 +155,8 @@ class Distribution:
         - For inputs greater than the last edge,
           the PDF returns either zero or NaN,
           depending on whether the last histogram bucket is empty.
+
+        :return: :class:`.StatsFunction`
         """
         return make_pdf(self.edges, self.values)
 
@@ -180,6 +182,8 @@ class Distribution:
         - For inputs greater than the last edge,
           the PDF returns either one or NaN,
           depending on whether the last histogram bucket is empty.
+
+        :return: :class:`.StatsFunction`
         """
         return make_cdf(self.edges, self.values)
 
@@ -208,5 +212,7 @@ class Distribution:
         - When called with one,
           returns the right edge of the greatest non-empty bucket.
           If the last bucket is not empty, returns NaN.
+
+        :return: :class:`.StatsFunction`
         """
         return make_quantile(self.edges, self.values)

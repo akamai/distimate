@@ -2,12 +2,19 @@ import numpy as np
 
 
 class StatsFunction:
-    """Function interpolating between sample values."""
+    """
+    Statistical function.
+
+    Provides :attr:`x` and :attr:`y` attributes for plotting,
+    or can be called for approximating value at an arbitrary point.
+    """
 
     __slots__ = ("x", "y", "_left", "_right", "_interp")
 
     def __init__(self, x, y, *, left=np.nan, right=np.nan, interp=np.interp):
+        #: :class:`numpy.array` of x-values for plotting
         self.x = x
+        #: :class:`numpy.array` of y-values for plotting
         self.y = y
         self._left = left
         self._right = right
@@ -17,7 +24,7 @@ class StatsFunction:
         """
         Compute function value at the given point.
 
-        :param x: scalar value or Numpy array-like
+        :param v: scalar value or Numpy array-like
         :return: scalar value or Numpy array depending on *x*
         """
         return self._interp(v, self.x, self.y, left=self._left, right=self._right)

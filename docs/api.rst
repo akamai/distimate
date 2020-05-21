@@ -9,11 +9,17 @@ API
 
 .. autoclass:: Distribution
     :members:
+    :special-members: __eq__, __add__
 
-    .. automethod:: __eq__
-    .. automethod:: __add__
 
 .. module:: distimate.types
 
 .. autoclass:: DistributionType
     :members:
+
+
+.. module:: distimate.stats
+
+.. autoclass:: StatsFunction()
+    :members:
+    :special-members: __call__
