@@ -7,8 +7,9 @@ class Distribution:
     """
     Statistical distribution represented by its histogram.
 
-    :param edges: 1-D array-like
-    :param values: 1-D array-like, one item longer than *edges*
+    :param edges: 1-D array-like, list of histogram edges
+    :param values: 1-D array-like, histogram, one item longer than *edges*
+
     """
 
     __slots__ = ("edges", "values")
@@ -70,7 +71,11 @@ class Distribution:
         return np.cumsum(self.values)
 
     def size(self):
-        """Return a total weight of samples in this distribution."""
+        """
+        Return a total weight of samples in this distribution.
+
+        :return: :class:`float`
+        """
         return self.values.sum()
 
     def add(self, value, weight=None):
@@ -91,7 +96,7 @@ class Distribution:
         """
         Add multiple items to this distribution.
 
-        :param values: items to add, 1-D array_like
+        :param values: items to add, 1-D array-like
         :param weights: optional item weights
         """
         values = np.asarray(values)
@@ -129,7 +134,7 @@ class Distribution:
         """
         Probability density function (PDF) of this distribution.
 
-        Returns a callable object with ``x`` and ``y`` attributes.
+        Returns a callable object with ``.x`` and ``.y`` attributes.
         The attributes can be used for plotting, or the function
         can be called to estimate a PDF value at arbitrary point.
         The function accepts a single value or an array-like.
@@ -146,7 +151,7 @@ class Distribution:
           This is because the PDF is not defined for discrete distributions.
         - For inputs in each of inner histogram buckets (which are left-open),
           one value is returned. On a plot, this will form a staircase.
-          To plot a non-continuous distribution, x-values are be duplicated.
+          To plot a non-continuous distribution, x-values are duplicated.
         - For inputs greater than the last edge,
           the PDF returns either zero or NaN,
           depending on whether the last histogram bucket is empty.
@@ -158,13 +163,13 @@ class Distribution:
         """
         Cumulative distribution function (CDF) of this distribution.
 
-        Returns a callable object with ``x`` and ``y`` attributes.
+        Returns a callable object with ``.x`` and ``.y`` attributes.
         The attributes can be used for plotting, or the function
         can be called to estimate a CDF value at arbitrary point.
         The function accepts a single value or an array-like.
 
         ``cdf(x)`` returns a probability that a distribution
-        value will be lesser than or equal to ``x``.
+        value will be lesser than or equal to ``.x``.
 
         - For inputs lesser than the first edge,
           the CDF will always return zero.
@@ -183,12 +188,12 @@ class Distribution:
         """
         Quantile function of this distribution.
 
-        Returns a callable object with ``x`` and ``y`` attributes.
+        Returns a callable object with ``.x`` and ``.y`` attributes.
         The attributes can be used for plotting, or the function
         can be called to estimate a quantile value at arbitrary point.
         The function accepts a single value or an array-like.
 
-        ``quantile(q)`` returns the smallest ``x`` for which ``cdf(x) >=  q``.
+        ``quantile(q)`` returns the smallest ``.x`` for which ``cdf(x) >= q``.
 
         - If the first histogram bucket is not empty,
           the quantile value can return the first edge for many inputs.

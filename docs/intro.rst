@@ -1,0 +1,179 @@
+
+Introduction
+############
+
+Distributions
+=============
+
+Distimate stores distributions as histograms with constant edges.
+The :class:`.DistributionType` class is available to remember histogram edges.
+
+
+.. testcode::
+
+    from distimate import DistributionType
+
+    dist_type = DistributionType([0, 10, 50, 100])
+    print(dist_type.edges)
+
+.. testoutput::
+
+    [  0  10  50 100]
+
+
+Once we specified the histogram edges, we can create a :class:`.Distribution` instance.
+Each distribution instance holds a histogram with one more bucket than it has edges.
+
+- The first histogram bucket counts items lesser than or equal to the first edge.
+- The middle buckets count items greater than their left edge
+  and lesser than or equal to their right edge (intervals are left-open).
+- The last bucket counts items greater than the last edge.
+
+
+.. testcode::
+
+    dist = dist_type.from_samples([0, 7, 10, 107])
+    print(dist.to_histogram())
+
+.. testoutput::
+
+    [1. 2. 0. 0. 1.]
+
+
+Distributions can be updated or combined:
+
+
+.. testcode::
+
+    dist1 = dist_type.empty()
+    dist1.add(7)
+    print(dist1.to_histogram())
+
+    dist2 = dist_type.empty()
+    dist2.update([0, 1, 1])
+    print(dist2.to_histogram())
+
+    print("----------------")
+    print((dist1 + dist2).to_histogram())
+
+.. testoutput::
+
+    [0. 1. 0. 0. 0.]
+    [1. 2. 0. 0. 0.]
+    ----------------
+    [1. 3. 0. 0. 0.]
+
+
+Optional weights are supported:
+
+
+.. testcode::
+
+    dist = dist_type.from_samples([0, 7, 13], [1, 2, 3])
+    print(dist.to_histogram())
+
+.. testoutput::
+
+    [1. 2. 3. 0. 0.]
+
+Statistics
+==========
+
+
+The :class:`.Distribution` class offers common statistical functions.
+All functions are approximated from an underlying histogram.
+
+- We assume that samples are uniformly distributed in buckets.
+- Samples in the first bucket are represented by the first edge.
+- The last bucket counts out-of-range samples.
+
+.. testcode::
+
+    # The first bucket counts zeros.
+    dist = dist_type.from_histogram([3, 0, 0, 0, 0])
+    print(dist)
+
+.. testoutput::
+
+    <Distribution: size=3, mean=0.00>
+
+
+.. testcode::
+
+    # The midpoint of the (0, 10] bucket is 5.
+    dist = dist_type.from_histogram([0, 7, 0, 0, 0])
+    print(dist)
+
+.. testoutput::
+
+    <Distribution: size=7, mean=5.00>
+
+
+.. testcode::
+
+    # The last bucket cannot be approximated.
+    dist = dist_type.from_histogram([0, 0, 0, 0, 13])
+    print(dist)
+
+.. testoutput::
+
+    <Distribution: size=13, mean=nan>
+
+
+The main feature of Distimate is the ability to compupte advanced statistical functions:
+
+ - probability density function (:attr:`.Distribution.pdf`),
+ - cumulative distribution function (:attr:`.Distribution.cdf`),
+ - quantile (percentile) function (:attr:`.Distribution.quantile`).
+
+Each of the above functions can be either plotted as an object with ``.x`` and ``.y`` attributes,
+or it can be called to approximate a function value at arbitrary point.
+
+
+.. testcode::
+
+    dist = dist_type.from_histogram([4, 3, 1, 0, 2])
+    print(dist.cdf.x)
+    print(dist.cdf.y)
+
+.. testoutput::
+
+    [  0  10  50 100]
+    [0.4 0.7 0.8 0.8]
+
+The functions accept a number or a NumPy array-like.
+
+.. testcode::
+
+    print(dist.cdf(-7))
+    print(dist.cdf(0))
+    print(dist.cdf(5))
+    print(dist.cdf(107))
+    print(dist.cdf([-7, 0, 5, 107]))
+
+.. testoutput::
+
+    0.0
+    0.4
+    0.55
+    nan
+    [0.   0.4  0.55  nan]
+
+
+The implementation intelligently handles various corner cases.
+In the following example, distribution median can be anything between 10 and 50.
+
+.. testcode::
+
+    dist = dist_type.from_histogram([0, 5, 0, 5, 0])
+
+    print(dist.quantile.x, dist.quantile.y)
+    print(dist.quantile(0.5))
+
+.. testoutput::
+
+    [0.  0.5 0.5 1. ] [  0.  10.  50. 100.]
+    10.0
+
+A plot will contain a vertical line,
+but a function call returns the lowest of possible values, as stated in the method documentation.
