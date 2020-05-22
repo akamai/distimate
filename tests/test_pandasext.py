@@ -9,10 +9,10 @@ dist_type = DistributionType([0, 10, 100])
 
 class TestDistributionAccessor:
 
-    dists = [
-        dist_type.from_samples([0, 5]),
-        dist_type.from_samples([10, 20]),
-    ]
+    dist1 = dist_type.from_samples([0, 5])
+    dist2 = dist_type.from_samples([10, 20])
+
+    dists = [dist1, dist2]
 
     def test_from_histogram_array(self):
         histograms = [[1.0, 1.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]]
@@ -149,6 +149,12 @@ class TestDistributionAccessor:
             pd.DataFrame({"pdf0": [np.nan, 0], "pdf10": [0.05, 0.05]}),
         )
 
+    def test_pdf_with_missing_data(self):
+        series = pd.Series([None, pd.NA, self.dist1])
+        assert_series_equal(
+            series.dist.pdf(10), pd.Series([np.nan, np.nan, 0.05], name="pdf10")
+        )
+
     def test_cdf_of_anonymous_series(self):
         series = pd.Series(self.dists)
         assert_series_equal(series.dist.cdf(10), pd.Series([1.0, 0.5], name="cdf10"))
@@ -170,6 +176,12 @@ class TestDistributionAccessor:
         assert_frame_equal(
             series.dist.cdf([0, 10]),
             pd.DataFrame({"cdf0": [0.5, 0], "cdf10": [1.0, 0.5]}),
+        )
+
+    def test_cdf_with_missing_data(self):
+        series = pd.Series([None, pd.NA, self.dist1])
+        assert_series_equal(
+            series.dist.cdf(10), pd.Series([np.nan, np.nan, 1.0], name="cdf10")
         )
 
     def test_quantile_of_anonymous_series(self):
@@ -195,6 +207,12 @@ class TestDistributionAccessor:
         assert_frame_equal(
             series.dist.quantile([0.05, 0.5]),
             pd.DataFrame({"q05": [0.0, 1.0], "q50": [0.0, 10.0]}),
+        )
+
+    def test_quantile_with_missing_data(self):
+        series = pd.Series([None, pd.NA, self.dist1])
+        assert_series_equal(
+            series.dist.quantile(0.5), pd.Series([np.nan, np.nan, 0.0], name="q50")
         )
 
     def test_sum(self):

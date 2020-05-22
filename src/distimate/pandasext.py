@@ -86,18 +86,18 @@ class DistributionAccessor(object):
 
     def _pdf(self, v):
         name = self._get_name(f"pdf{_format_number(v)}")
-        rv = self._series.map(lambda dist: dist.pdf(v))
-        return rv.rename(name, inplace=True)
+        data = [dist.pdf(v) if pd.notna(dist) else np.nan for dist in self._series]
+        return pd.Series(data, index=self._series.index, name=name)
 
     def _cdf(self, v):
         name = self._get_name(f"cdf{_format_number(v)}")
-        rv = self._series.map(lambda dist: dist.cdf(v))
-        return rv.rename(name, inplace=True)
+        data = [dist.cdf(v) if pd.notna(dist) else np.nan for dist in self._series]
+        return pd.Series(data, index=self._series.index, name=name)
 
     def _quantile(self, v):
         name = self._get_name(f"q{_format_number(100 * v).rjust(2, '0')}")
-        rv = self._series.map(lambda dist: dist.quantile(v))
-        return rv.rename(name, inplace=True)
+        data = [dist.quantile(v) if pd.notna(dist) else np.nan for dist in self._series]
+        return pd.Series(data, index=self._series.index, name=name)
 
     def _get_name(self, name):
         if self._series.name is None:
