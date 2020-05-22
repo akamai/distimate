@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from numpy.testing import assert_array_equal
 from pandas.testing import assert_frame_equal, assert_series_equal
 
 from distimate.types import DistributionType
@@ -101,6 +102,13 @@ class TestDistributionAccessor:
             ),
         )
 
+    def test_empty_to_histogram(self):
+        series = pd.Series([], dtype=object)
+        assert_frame_equal(
+            series.dist.to_histogram(),
+            pd.DataFrame([], columns=[], index=series.index),
+        )
+
     def test_to_cumulative_of_anonymous_series(self):
         series = pd.Series(self.dists)
         assert_frame_equal(
@@ -125,6 +133,23 @@ class TestDistributionAccessor:
                 ],
             ),
         )
+
+    def test_empty_to_cumulative(self):
+        series = pd.Series([], dtype=object)
+        assert_frame_equal(
+            series.dist.to_cumulative(),
+            pd.DataFrame([], columns=[], index=series.index),
+        )
+
+    def test_values(self):
+        series = pd.Series(self.dists)
+        assert_array_equal(
+            series.dist.values, [[1.0, 1.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]]
+        )
+
+    def test_values_of_empty(self):
+        series = pd.Series([], dtype=object)
+        assert_array_equal(series.dist.values, np.zeros((0, 0)))
 
     def test_pdf_of_anonymous_series(self):
         series = pd.Series(self.dists)
@@ -153,6 +178,12 @@ class TestDistributionAccessor:
         series = pd.Series([None, pd.NA, self.dist1])
         assert_series_equal(
             series.dist.pdf(10), pd.Series([np.nan, np.nan, 0.05], name="pdf10")
+        )
+
+    def test_pdf_of_empty(self):
+        series = pd.Series([], dtype=object)
+        assert_series_equal(
+            series.dist.pdf(10), pd.Series([], dtype=float, name="pdf10")
         )
 
     def test_cdf_of_anonymous_series(self):
@@ -184,6 +215,12 @@ class TestDistributionAccessor:
             series.dist.cdf(10), pd.Series([np.nan, np.nan, 1.0], name="cdf10")
         )
 
+    def test_cdf_of_empty(self):
+        series = pd.Series([], dtype=object)
+        assert_series_equal(
+            series.dist.cdf(10), pd.Series([], dtype=float, name="cdf10")
+        )
+
     def test_quantile_of_anonymous_series(self):
         series = pd.Series(self.dists)
         assert_series_equal(
@@ -213,6 +250,12 @@ class TestDistributionAccessor:
         series = pd.Series([None, pd.NA, self.dist1])
         assert_series_equal(
             series.dist.quantile(0.5), pd.Series([np.nan, np.nan, 0.0], name="q50")
+        )
+
+    def test_quantile_of_empty(self):
+        series = pd.Series([], dtype=object)
+        assert_series_equal(
+            series.dist.quantile(0.5), pd.Series([], dtype=float, name="q50")
         )
 
     def test_sum(self):

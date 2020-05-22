@@ -49,6 +49,8 @@ class DistributionAccessor(object):
 
     @property
     def values(self):
+        if self._series.empty:
+            return np.zeros((0, 0))
         return np.array([dist.values for dist in self._series])
 
     def pdf(self, v):
