@@ -9,26 +9,29 @@ class Distribution:
 
     :param edges: 1-D array-like, list of histogram edges
     :param values: 1-D array-like, histogram, one item longer than *edges*
-
     """
 
     __slots__ = ("edges", "values")
 
+    #: NumPy dtype of histogram values.
     dtype = np.float64
 
     def __init__(self, edges, values=None):
+        #: Edges of the underlying histogram.
         self.edges = np.asarray(edges)
         size = len(self.edges) + 1
         if values is None:
-            self.values = np.zeros(size, dtype=self.dtype)
+            values = np.zeros(size, dtype=self.dtype)
         else:
-            self.values = np.asarray(values, dtype=self.dtype)
-            if self.values.ndim != 1:
+            values = np.asarray(values, dtype=self.dtype)
+            if values.ndim != 1:
                 raise ValueError("Histogram must be 1-D array-like.")
-            if len(self.values) != size:
+            if len(values) != size:
                 raise ValueError("Histogram must have len(edges) + 1 items.")
-            if not np.all(self.values >= 0):
+            if not np.all(values >= 0):
                 raise ValueError("Histogram values must not be negative.")
+        #: Values of the underlying histogram.
+        self.values = values
 
     def __repr__(self):
         name = type(self).__name__
