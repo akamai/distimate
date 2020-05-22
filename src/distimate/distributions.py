@@ -7,6 +7,10 @@ class Distribution:
     """
     Statistical distribution represented by its histogram.
 
+    Provides object interface on top of a histogram array.
+    Supports distribution merging and comparison.
+    Implements approximation of common statistical functions.
+
     :param edges: 1-D array-like, list of histogram edges
     :param values: 1-D array-like, histogram, one item longer than *edges*
     """
@@ -56,6 +60,43 @@ class Distribution:
             self.values += other.values
             return self
         return NotImplemented
+
+    @classmethod
+    def from_samples(cls, edges, samples, weights=None):
+        """
+        Create a distribution from a list of values.
+
+        :param edges: 1-D array-like
+        :param samples: 1-D array-like
+        :param weights: optional 1-D array-like
+        :return: a new :class:`Distribution`
+        """
+        dist = cls(edges)
+        dist.update(samples, weights)
+        return dist
+
+    @classmethod
+    def from_histogram(cls, edges, histogram):
+        """
+        Create a distribution from a histogram.
+
+        :param edges: 1-D array-like
+        :param histogram: 1-D array-like
+        :return: a new :class:`Distribution`
+        """
+        return cls(edges, histogram)
+
+    @classmethod
+    def from_cumulative(cls, edges, cumulative):
+        """
+        Create a distribution from a cumulative histogram.
+
+        :param edges: 1-D array-like
+        :param cumulative: 1-D array-like
+        :return: a new :class:`Distribution`
+        """
+        values = np.diff(cumulative, prepend=0)
+        return cls(edges, values)
 
     def to_histogram(self):
         """

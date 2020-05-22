@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import pytest
 from numpy.testing import assert_array_equal
 
@@ -22,6 +23,70 @@ class TestDistribution:
         with pytest.raises(ValueError) as exc_info:
             Distribution(EDGES, [0, 0, -1, 0])
         assert str(exc_info.value) == "Histogram values must not be negative."
+
+    def test_from_samples_list(self):
+        dist = Distribution.from_samples(EDGES, [0, 42, 47])
+        assert_array_equal(dist.values, [1, 0, 2, 0])
+
+    def test_from_samples_lists_w_weights(self):
+        dist = Distribution.from_samples(EDGES, [0, 42, 47], [5, 1, 2])
+        assert_array_equal(dist.values, [5, 0, 3, 0])
+
+    def test_from_samples_array(self):
+        dist = Distribution.from_samples(EDGES, np.array([0, 42, 47]))
+        assert_array_equal(dist.values, [1, 0, 2, 0])
+
+    def test_from_samples_array_w_weights(self):
+        dist = Distribution.from_samples(
+            EDGES, np.array([0, 42, 47]), np.array([5, 1, 2])
+        )
+        assert_array_equal(dist.values, [5, 0, 3, 0])
+
+    def test_from_samples_series(self):
+        dist = Distribution.from_samples(EDGES, pd.Series([0, 42, 47]))
+        assert_array_equal(dist.values, [1, 0, 2, 0])
+
+    def test_from_samples_series_w_weights(self):
+        dist = Distribution.from_samples(
+            EDGES, pd.Series([0, 42, 47]), pd.Series([5, 1, 2])
+        )
+        assert_array_equal(dist.values, [5, 0, 3, 0])
+
+    def test_from_samples_frame(self):
+        with pytest.raises(ValueError) as exc_info:
+            Distribution.from_samples(EDGES, pd.DataFrame())
+        assert str(exc_info.value) == "Values must be 1-D array-like."
+
+    def test_from_samples_frame_column(self):
+        df = pd.DataFrame({"x": [0, 42, 47]})
+        dist = Distribution.from_samples(EDGES, df["x"])
+        assert_array_equal(dist.values, [1, 0, 2, 0])
+
+    def test_from_histogram_list(self):
+        dist = Distribution.from_histogram(EDGES, [2, 0, 1, 0])
+        assert_array_equal(dist.values, [2, 0, 1, 0])
+
+    def test_from_histogram_array(self):
+        dist = Distribution.from_histogram(EDGES, np.array([2, 0, 1, 0]))
+        assert_array_equal(dist.values, [2, 0, 1, 0])
+
+    def test_from_histogram_invalid_length(self):
+        with pytest.raises(ValueError) as exc_info:
+            Distribution.from_histogram(EDGES, [2, 0, 1])
+        assert str(exc_info.value) == "Histogram must have len(edges) + 1 items."
+
+    def test_from_cumulative_list(self):
+        dist = Distribution.from_cumulative(EDGES, [2, 2, 3, 3])
+        assert_array_equal(dist.values, [2, 0, 1, 0])
+
+    def test_from_cumulative_array(self):
+        dist = Distribution.from_cumulative(EDGES, np.array([2, 2, 3, 3]))
+        assert_array_equal(dist.values, [2, 0, 1, 0])
+
+    def test_from_cumulative_invalid_length(self):
+        with pytest.raises(ValueError) as exc_info:
+            Distribution.from_cumulative(EDGES, [2, 2, 3])
+        assert str(exc_info.value) == "Histogram must have len(edges) + 1 items."
 
     def test_empty(self):
         dist = Distribution(EDGES)

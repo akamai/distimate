@@ -21,7 +21,7 @@ class DistributionType:
         """
         Create an empty distribution.
 
-        :return: :class:`Distribution`
+        :return: a new :class:`Distribution`
         """
         return self._dist_cls(self.edges)
 
@@ -30,38 +30,25 @@ class DistributionType:
         Create a distribution from a list of values.
 
         :param samples: 1-D array-like
-        :param weights: 1-D array-like
-        :return: :class:`Distribution`
+        :param weights: optional 1-D array-like
+        :return: a new :class:`Distribution`
         """
-        dist = self.empty()
-        dist.update(samples, weights)
-        return dist
+        return self._dist_cls.from_samples(self.edges, samples, weights)
 
     def from_histogram(self, histogram):
         """
         Create a distribution from a histogram.
 
         :param histogram: 1-D array-like
-        :return: :class:`Distribution`
+        :return: a new :class:`Distribution`
         """
-        values = self._array_from_seq(histogram)
-        return self._dist_cls(self.edges, values)
+        return self._dist_cls.from_histogram(self.edges, histogram)
 
     def from_cumulative(self, cumulative):
         """
         Create a distribution from a cumulative histogram.
 
         :param cumulative: 1-D array-like
-        :return: :class:`Distribution`
+        :return: a new :class:`Distribution`
         """
-        cumulative = self._array_from_seq(cumulative)
-        values = np.diff(cumulative, prepend=0)
-        return self._dist_cls(self.edges, values)
-
-    def _array_from_seq(self, data):
-        if np.ndim(data) != 1:
-            raise ValueError("Histogram must be 1-D array-like.")
-        array = np.asarray(data, dtype=self._dist_cls.dtype)
-        if len(array) != len(self.edges) + 1:
-            raise ValueError("Histogram must have len(edges) + 1 items.")
-        return array
+        return self._dist_cls.from_cumulative(self.edges, cumulative)
