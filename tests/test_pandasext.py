@@ -21,6 +21,12 @@ class TestDistributionAccessor:
             pd.Series(self.dists, name="price"),
         )
 
+    def test_from_empty_histogram_array(self):
+        assert_series_equal(
+            pd.Series.dist.from_histogram(dist_type, [], name="price"),
+            pd.Series([], name="price"),
+        )
+
     def test_from_histogram_frame(self):
         index = pd.Index(["a", "b"])
         histograms = pd.DataFrame(
@@ -31,11 +37,25 @@ class TestDistributionAccessor:
             pd.Series(self.dists, index=index, name="price"),
         )
 
+    def test_from_empty_histogram_frame(self):
+        index = pd.Index([])
+        histograms = pd.DataFrame(index=index, columns=range(4))
+        assert_series_equal(
+            pd.Series.dist.from_histogram(dist_type, histograms, name="price"),
+            pd.Series([], index=index, name="price"),
+        )
+
     def test_from_cumulative_array(self):
         cumulatives = [[1, 2, 2.0, 2.0], [0.0, 1.0, 2.0, 2.0]]
         assert_series_equal(
             pd.Series.dist.from_cumulative(dist_type, cumulatives, name="price"),
             pd.Series(self.dists, name="price"),
+        )
+
+    def test_from_empty_cumulative_array(self):
+        assert_series_equal(
+            pd.Series.dist.from_cumulative(dist_type, [], name="price"),
+            pd.Series([], name="price"),
         )
 
     def test_from_cumulative_frame(self):
@@ -46,6 +66,14 @@ class TestDistributionAccessor:
         assert_series_equal(
             pd.Series.dist.from_cumulative(dist_type, cumulatives, name="price"),
             pd.Series(self.dists, index=index, name="price"),
+        )
+
+    def test_from_empty_cumulative_frame(self):
+        index = pd.Index([])
+        cumulatives = pd.DataFrame(index=index, columns=range(4))
+        assert_series_equal(
+            pd.Series.dist.from_cumulative(dist_type, cumulatives, name="price"),
+            pd.Series([], index=index, name="price"),
         )
 
     def test_to_histogram_of_anonymous_series(self):
