@@ -1,3 +1,5 @@
+import numpy as np
+
 try:
     import pandas as pd
 except ImportError:
@@ -15,6 +17,39 @@ class DistributionAccessor(object):
 
     def __init__(self, series):
         self._series = series
+
+    @staticmethod
+    def from_histogram(dist_type, histograms, *, name=None):
+        index = None
+        if isinstance(histograms, pd.DataFrame):
+            index = histograms.index
+            histograms = histograms.values
+        dists = [dist_type.from_histogram(histogram) for histogram in histograms]
+        return pd.Series(dists, index=index, name=name)
+
+    @staticmethod
+    def from_cumulative(dist_type, cumulatives, *, name=None):
+        index = None
+        if isinstance(cumulatives, pd.DataFrame):
+            index = cumulatives.index
+            cumulatives = cumulatives.values
+        histograms = np.diff(cumulatives, prepend=0)
+        dists = [dist_type.from_histogram(histogram) for histogram in histograms]
+        return pd.Series(dists, index=index, name=name)
+
+    def to_histogram(self):
+        data = self.values
+        columns = [self._get_name(f"histogram{i}") for i in range(data.shape[-1])]
+        return pd.DataFrame(data, index=self._series.index, columns=columns)
+
+    def to_cumulative(self):
+        data = np.cumsum(self.values, axis=1)
+        columns = [self._get_name(f"cumulative{i}") for i in range(data.shape[-1])]
+        return pd.DataFrame(data, index=self._series.index, columns=columns)
+
+    @property
+    def values(self):
+        return np.array([dist.values for dist in self._series])
 
     def pdf(self, v):
         """
@@ -50,21 +85,24 @@ class DistributionAccessor(object):
         return meth(v)
 
     def _pdf(self, v):
+        name = self._get_name(f"pdf{_format_number(v)}")
         rv = self._series.map(lambda dist: dist.pdf(v))
-        return self._rename(rv, f"pdf{_format_number(v)}")
+        return rv.rename(name, inplace=True)
 
     def _cdf(self, v):
+        name = self._get_name(f"cdf{_format_number(v)}")
         rv = self._series.map(lambda dist: dist.cdf(v))
-        return self._rename(rv, f"cdf{_format_number(v)}")
+        return rv.rename(name, inplace=True)
 
     def _quantile(self, v):
+        name = self._get_name(f"q{_format_number(100 * v).rjust(2, '0')}")
         rv = self._series.map(lambda dist: dist.quantile(v))
-        return self._rename(rv, f"q{_format_number(100 * v).rjust(2, '0')}")
+        return rv.rename(name, inplace=True)
 
-    def _rename(self, s, name):
-        if self._series.name is not None:
-            name = f"{self._series.name}_{name}"
-        return s.rename(name, inplace=True)
+    def _get_name(self, name):
+        if self._series.name is None:
+            return name
+        return f"{self._series.name}_{name}"
 
 
 def register_to_pandas():

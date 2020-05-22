@@ -14,6 +14,90 @@ class TestDistributionAccessor:
         dist_type.from_samples([10, 20]),
     ]
 
+    def test_from_histogram_array(self):
+        histograms = [[1.0, 1.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]]
+        assert_series_equal(
+            pd.Series.dist.from_histogram(dist_type, histograms, name="price"),
+            pd.Series(self.dists, name="price"),
+        )
+
+    def test_from_histogram_frame(self):
+        index = pd.Index(["a", "b"])
+        histograms = pd.DataFrame(
+            [[1.0, 1.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]], index=index
+        )
+        assert_series_equal(
+            pd.Series.dist.from_histogram(dist_type, histograms, name="price"),
+            pd.Series(self.dists, index=index, name="price"),
+        )
+
+    def test_from_cumulative_array(self):
+        cumulatives = [[1, 2, 2.0, 2.0], [0.0, 1.0, 2.0, 2.0]]
+        assert_series_equal(
+            pd.Series.dist.from_cumulative(dist_type, cumulatives, name="price"),
+            pd.Series(self.dists, name="price"),
+        )
+
+    def test_from_cumulative_frame(self):
+        index = pd.Index(["a", "b"])
+        cumulatives = pd.DataFrame(
+            [[1, 2, 2.0, 2.0], [0.0, 1.0, 2.0, 2.0]], index=index
+        )
+        assert_series_equal(
+            pd.Series.dist.from_cumulative(dist_type, cumulatives, name="price"),
+            pd.Series(self.dists, index=index, name="price"),
+        )
+
+    def test_to_histogram_of_anonymous_series(self):
+        series = pd.Series(self.dists)
+        assert_frame_equal(
+            series.dist.to_histogram(),
+            pd.DataFrame(
+                [[1.0, 1.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]],
+                columns=["histogram0", "histogram1", "histogram2", "histogram3"],
+            ),
+        )
+
+    def test_to_histogram_of_named_series(self):
+        series = pd.Series(self.dists, name="price")
+        assert_frame_equal(
+            series.dist.to_histogram(),
+            pd.DataFrame(
+                [[1.0, 1.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]],
+                columns=[
+                    "price_histogram0",
+                    "price_histogram1",
+                    "price_histogram2",
+                    "price_histogram3",
+                ],
+            ),
+        )
+
+    def test_to_cumulative_of_anonymous_series(self):
+        series = pd.Series(self.dists)
+        assert_frame_equal(
+            series.dist.to_cumulative(),
+            pd.DataFrame(
+                [[1, 2, 2.0, 2.0], [0.0, 1.0, 2.0, 2.0]],
+                columns=["cumulative0", "cumulative1", "cumulative2", "cumulative3"],
+            ),
+        )
+
+    def test_to_cumulative_of_named_series(self):
+        series = pd.Series(self.dists, name="price")
+        assert_frame_equal(
+            series.dist.to_cumulative(),
+            pd.DataFrame(
+                [[1, 2, 2.0, 2.0], [0.0, 1.0, 2.0, 2.0]],
+                columns=[
+                    "price_cumulative0",
+                    "price_cumulative1",
+                    "price_cumulative2",
+                    "price_cumulative3",
+                ],
+            ),
+        )
+
     def test_pdf_of_anonymous_series(self):
         series = pd.Series(self.dists)
         assert_series_equal(series.dist.pdf(10), pd.Series([0.05, 0.05], name="pdf10"))

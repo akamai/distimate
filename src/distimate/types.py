@@ -37,15 +37,15 @@ class DistributionType:
         dist.update(samples, weights)
         return dist
 
-    def from_histogram(self, hist):
+    def from_histogram(self, histogram):
         """
         Create a distribution from a histogram.
 
-        :param hist: 1-D array-like
+        :param histogram: 1-D array-like
         :return: :class:`Distribution`
         """
-        hist = self._array_from_seq(hist)
-        return self._dist_cls(self.edges, hist)
+        values = self._array_from_seq(histogram)
+        return self._dist_cls(self.edges, values)
 
     def from_cumulative(self, cumulative):
         """
@@ -55,8 +55,8 @@ class DistributionType:
         :return: :class:`Distribution`
         """
         cumulative = self._array_from_seq(cumulative)
-        hist = np.ediff1d(cumulative, to_begin=cumulative[0])
-        return self.from_histogram(hist)
+        values = np.diff(cumulative, prepend=0)
+        return self._dist_cls(self.edges, values)
 
     def _array_from_seq(self, data):
         if np.ndim(data) != 1:
