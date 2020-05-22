@@ -196,3 +196,17 @@ class TestDistributionAccessor:
             series.dist.quantile([0.05, 0.5]),
             pd.DataFrame({"q05": [0.0, 1.0], "q50": [0.0, 10.0]}),
         )
+
+    def test_sum(self):
+        series = pd.Series(self.dists)
+        assert series.sum() == dist_type.from_samples([0, 5, 10, 20])
+
+    def test_groupby_sum(self):
+        df = pd.DataFrame({"cat": ["a", "a"], "price": self.dists})
+        assert_frame_equal(
+            df.groupby("cat").sum(),
+            pd.DataFrame(
+                {"price": [dist_type.from_samples([0, 5, 10, 20])]},
+                index=pd.Index(["a"], name="cat"),
+            ),
+        )
