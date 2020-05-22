@@ -1,0 +1,11 @@
+recursive-include src *.py
+recursive-include tests *.py
+recursive-include docs *.py *.rst Makefile
+include .flake8
+include .isort.cfg
+include MANIFEST.in
+include pytest.ini
+include pyproject.toml
+include README.md
+include setup.py
+include tox.ini
