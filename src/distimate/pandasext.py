@@ -149,7 +149,7 @@ class DistributionAccessor(object):
         return pd.Series(data, index=self._series.index, name=name)
 
     def _quantile(self, v):
-        name = self._get_name(f"q{_format_number(100 * v).rjust(2, '0')}")
+        name = self._get_name(f"q{_format_number(100 * v)}")
         data = [dist.quantile(v) if pd.notna(dist) else np.nan for dist in self._series]
         return pd.Series(data, index=self._series.index, name=name)
 

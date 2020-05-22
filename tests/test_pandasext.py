@@ -170,8 +170,8 @@ class TestDistributionAccessor:
     def test_multiple_pdf(self):
         series = pd.Series(self.dists)
         assert_frame_equal(
-            series.dist.pdf([0, 10]),
-            pd.DataFrame({"pdf0": [np.nan, 0], "pdf10": [0.05, 0.05]}),
+            series.dist.pdf([0, 0.5]),
+            pd.DataFrame({"pdf0": [np.nan, 0], "pdf0.5": [0.05, 0.05]}),
         )
 
     def test_pdf_with_missing_data(self):
@@ -205,8 +205,8 @@ class TestDistributionAccessor:
     def test_multiple_cdf(self):
         series = pd.Series(self.dists)
         assert_frame_equal(
-            series.dist.cdf([0, 10]),
-            pd.DataFrame({"cdf0": [0.5, 0], "cdf10": [1.0, 0.5]}),
+            series.dist.cdf([0, 0.5]),
+            pd.DataFrame({"cdf0": [0.5, 0], "cdf0.5": [0.525, 0.025]}),
         )
 
     def test_cdf_with_missing_data(self):
@@ -242,8 +242,8 @@ class TestDistributionAccessor:
     def test_multiple_quantile_values(self):
         series = pd.Series(self.dists)
         assert_frame_equal(
-            series.dist.quantile([0.05, 0.5]),
-            pd.DataFrame({"q05": [0.0, 1.0], "q50": [0.0, 10.0]}),
+            series.dist.quantile([0.01, 0.001]),
+            pd.DataFrame({"q1": [0.0, 0.2], "q0.1": [0.0, 0.02]}),
         )
 
     def test_quantile_with_missing_data(self):
