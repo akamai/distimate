@@ -5,6 +5,9 @@
 API
 ###
 
+Distributions
+=============
+
 .. module:: distimate.distributions
 
 .. autoclass:: Distribution
@@ -18,8 +21,20 @@ API
     :members:
 
 
+Statistics
+==========
+
 .. module:: distimate.stats
 
 .. autoclass:: StatsFunction()
     :members:
     :special-members: __call__
+
+
+Pandas integration
+==================
+
+    .. module:: distimate.pandasext
+
+    .. autoclass:: DistributionAccessor
+        :members:
