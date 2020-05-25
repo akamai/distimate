@@ -3,22 +3,25 @@
 Distimate documentation
 ========================
 
-Distimate allows to you to analyze distribution of an arbitrary large populations using constant memory.
-Distributions are stored as histograms with predefined bucket edges.
+Distimate allows you to analyze arbitrary large populations using constant memory.
 
-Distribution histograms can be collected incrementally or aggregated from smaller samples.
+Internally, distributions are approximated using histograms with predefined bucket edges.
+This library can estimate common statistical functions (PDF, CDF, quantile) from the histograms.
 
-Distimate can estimate common statistical function from the histograms.
+.. code-block:: python
 
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from distimate import DistributionType
 
-When a histogram is known (e.g. loaded from database), it is possible
-to compute CDF (cumulative distribution function) or estimate percentiles
-of the distribution.
+    edges = [0, 0.1, 0.2, 0.5, 1, 2, 5, 10]
+    dist_type = DistributionType(edges)
 
+    dist = dist_type.from_samples(np.random.lognormal(size=10**6))
+    plt.plot(dist.cdf.x, dist.cdf.y)
 
 
 .. toctree::
-    :caption: Contents:
 
     install
     intro
