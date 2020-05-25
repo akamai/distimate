@@ -1,9 +1,9 @@
 
-Introduction
-############
+Tutorial
+========
 
 Distributions
-=============
+-------------
 
 Distimate stores distributions as histograms with constant edges.
 The :class:`.DistributionType` class can remember the histogram edges.
@@ -84,7 +84,7 @@ Optional weights are supported:
 
 
 Statistics
-==========
+----------
 
 :class:`.Distribution` instances implement common statistical functions.
 All functions are approximated from underlying histograms.
@@ -124,7 +124,7 @@ All functions are approximated from underlying histograms.
     <Distribution: size=13, mean=nan>
 
 
-The main feature of Distimate is the ability to compupte well-known statistical functions:
+The main feature of Distimate is the ability to estimate common statistical functions:
 
  - probability density function (:attr:`.Distribution.pdf`),
  - cumulative distribution function (:attr:`.Distribution.cdf`),
@@ -184,7 +184,7 @@ but a function call returns the lowest of possible values, as stated in the meth
 
 
 Pandas integration
-==================
+------------------
 
 Consider that you load :class:`pandas.DataFrame` with histogram values:
 

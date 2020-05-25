@@ -1,12 +1,9 @@
 
-.. _api:
-
-
 API
-###
+===
 
 Distributions
-=============
+-------------
 
 .. module:: distimate.distributions
 
@@ -22,7 +19,7 @@ Distributions
 
 
 Statistics
-==========
+----------
 
 .. module:: distimate.stats
 
@@ -32,7 +29,7 @@ Statistics
 
 
 Pandas integration
-==================
+------------------
 
     .. module:: distimate.pandasext
 
