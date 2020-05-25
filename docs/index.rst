@@ -16,12 +16,11 @@ to compute CDF (cumulative distribution function) or estimate percentiles
 of the distribution.
 
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
 .. toctree::
+    :caption: Contents:
 
+    install
     intro
     api
 
