@@ -21,7 +21,7 @@ class DistributionAccessor(object):
 
     .. code-block:: python
 
-        df[col] = pd.Series.dist.from_histogram(histograms)
+        df[col] = pd.Series.dist.from_histogram(dist_type, histograms)
         median = df[col].dist.quantile(0.5)
 
     """
@@ -39,7 +39,7 @@ class DistributionAccessor(object):
 
         :param dist_type: :class:`.DistributionType` defining histogram buckets
         :param histograms: :class:`pandas.DataFrame` or 2-D array-like
-        :param name: Optional name of the series.
+        :param name: optional name of the series.
         :return: :class:`pandas.Series`
         """
         index = None

@@ -7,7 +7,7 @@ class Distribution:
     """
     Statistical distribution represented by its histogram.
 
-    Provides object interface on top of a histogram array.
+    Provides an object interface on top of a histogram array.
     Supports distribution merging and comparison.
     Implements approximation of common statistical functions.
 
@@ -17,7 +17,6 @@ class Distribution:
 
     __slots__ = ("edges", "values")
 
-    #: NumPy dtype of histogram values.
     dtype = np.float64
 
     def __init__(self, edges, values=None):
@@ -68,7 +67,8 @@ class Distribution:
 
         :param edges: 1-D array-like
         :param samples: 1-D array-like
-        :param weights: optional 1-D array-like
+        :param weights: optional scalar
+            or 1-D array-like with same length as samples.
         :return: a new :class:`Distribution`
         """
         dist = cls(edges)
@@ -81,7 +81,7 @@ class Distribution:
         Create a distribution from a histogram.
 
         :param edges: 1-D array-like
-        :param histogram: 1-D array-like
+        :param histogram: 1-D array-like, one item longer than edges
         :return: a new :class:`Distribution`
         """
         return cls(edges, histogram)
@@ -92,7 +92,7 @@ class Distribution:
         Create a distribution from a cumulative histogram.
 
         :param edges: 1-D array-like
-        :param cumulative: 1-D array-like
+        :param cumulative: 1-D array-like, one item longer than edges
         :return: a new :class:`Distribution`
         """
         values = np.diff(cumulative, prepend=0)
@@ -102,7 +102,7 @@ class Distribution:
         """
         Return a histogram of this distribution as a NumPy array.
 
-        :return: :class:`numpy.array`
+        :return: 1-D :class:`numpy.array`
         """
         return self.values.copy()
 
@@ -110,7 +110,7 @@ class Distribution:
         """
         Return a cumulative histogram of this distribution as a NumPy array.
 
-        :return: :class:`numpy.array`
+        :return: 1-D :class:`numpy.array`
         """
         return np.cumsum(self.values)
 
@@ -118,7 +118,7 @@ class Distribution:
         """
         Return a total weight of samples in this distribution.
 
-        :return: :class:`float`
+        :return: float number
         """
         return self.values.sum()
 
@@ -141,7 +141,8 @@ class Distribution:
         Add multiple items to this distribution.
 
         :param values: items to add, 1-D array-like
-        :param weights: optional item weights
+        :param weights: optional scalar or 1-D array-like
+            with same length as samples.
         """
         values = np.asarray(values)
         if values.ndim != 1:
@@ -181,7 +182,10 @@ class Distribution:
         Returns a callable object with ``.x`` and ``.y`` attributes.
         The attributes can be used for plotting, or the function
         can be called to estimate a PDF value at arbitrary point.
-        The function accepts a single value or an array-like.
+        The callable accepts a single value or an array-like.
+
+        The returned callable takes inputs from a distribution domain
+        and returns outputs between 0 and 1 (inclusive).
 
         The PDF values provides relative likelihoods of various
         distribution values. It is computed from a histogram
@@ -212,7 +216,10 @@ class Distribution:
         Returns a callable object with ``.x`` and ``.y`` attributes.
         The attributes can be used for plotting, or the function
         can be called to estimate a CDF value at arbitrary point.
-        The function accepts a single value or an array-like.
+        The callable accepts a single value or an array-like.
+
+        The returned callable takes inputs from a distribution domain
+        and returns outputs between 0 and 1 (inclusive).
 
         ``cdf(x)`` returns a probability that a distribution
         value will be lesser than or equal to ``.x``.
@@ -240,6 +247,9 @@ class Distribution:
         The attributes can be used for plotting, or the function
         can be called to estimate a quantile value at arbitrary point.
         The function accepts a single value or an array-like.
+
+        The returned callable takes inputs from a range between 0 and 1
+        (inclusive) and returns outputs from a distribution domain.
 
         ``quantile(q)`` returns the smallest ``.x`` for which ``cdf(x) >= q``.
 
