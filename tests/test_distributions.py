@@ -188,12 +188,12 @@ class TestDistribution:
 
     def test_update_with_weight(self):
         dist = Distribution(EDGES)
-        dist.update([1, 1, 17], weights=10)
+        dist.update([1, 1, 17], 10)
         assert_array_equal(dist.values, [20, 0, 10, 0])
 
     def test_update_with_multiple_weights(self):
         dist = Distribution(EDGES)
-        dist.update([1, 1, 17], weights=[3, 2, 1])
+        dist.update([1, 1, 17], [3, 2, 1])
         assert_array_equal(dist.values, [5, 0, 1, 0])
 
     def test_update_not_1d(self):
