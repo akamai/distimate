@@ -24,10 +24,8 @@ This library can estimate common statistical functions (PDF, CDF, quantile) from
 .. toctree::
 
     install
-    intro
+    tutorial
     api
-
-
 
 
 Indices and tables
