@@ -20,6 +20,7 @@ import datetime as dt
 # -- Project information -----------------------------------------------------
 
 project = 'Distimate'
+description = 'Approximate distributions'
 copyright = '%s Akamai' % dt.date.today().year
 author = 'Miloslav Pojman'
 
@@ -55,6 +56,15 @@ html_theme = 'alabaster'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_theme_options = {
+    'description': description,
+    'fixed_sidebar': True,
+    'show_related': True,
+    'show_relbar_bottom': True,
+    'extra_nav_links': {
+    },
+}
 
 
 # -- Extension configuration -------------------------------------------------
