@@ -38,7 +38,7 @@ class Distribution:
 
     def __repr__(self):
         name = type(self).__name__
-        return f"<{name}: size={self.size():.0f}, mean={self.mean():.2f}>"
+        return f"<{name}: weight={self.weight():.0f}, mean={self.mean():.2f}>"
 
     def __eq__(self, other):
         """Return whether distribution histograms are equal."""
@@ -114,7 +114,7 @@ class Distribution:
         """
         return np.cumsum(self.values)
 
-    def size(self):
+    def weight(self):
         """
         Return a total weight of samples in this distribution.
 

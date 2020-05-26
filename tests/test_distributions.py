@@ -109,11 +109,11 @@ class TestDistribution:
 
     def test_repr_of_empty(self):
         dist = Distribution(EDGES)
-        assert repr(dist) == str(dist) == "<Distribution: size=0, mean=nan>"
+        assert repr(dist) == str(dist) == "<Distribution: weight=0, mean=nan>"
 
     def test_repr_of_full(self):
         dist = Distribution(EDGES, [1, 2, 0, 0])
-        assert repr(dist) == str(dist) == "<Distribution: size=3, mean=4.00>"
+        assert repr(dist) == str(dist) == "<Distribution: weight=3, mean=4.00>"
 
     def test_empty_equal(self):
         assert Distribution(EDGES) == Distribution(EDGES)
@@ -137,13 +137,13 @@ class TestDistribution:
         dist += Distribution(EDGES, [0, 2, 0, 4])
         assert_array_equal(hist, [1, 4, 0, 4])
 
-    def test_size_of_empty(self):
+    def test_weight_of_empty(self):
         dist = Distribution(EDGES)
-        assert dist.size() == 0
+        assert dist.weight() == 0
 
-    def test_size_of_full(self):
+    def test_weight_of_full(self):
         dist = Distribution(EDGES, [1, 2, 0, 4])
-        assert dist.size() == 7
+        assert dist.weight() == 7
 
     def test_add_lt_first_edge(self):
         dist = Distribution(EDGES)

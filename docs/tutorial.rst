@@ -101,7 +101,7 @@ All functions are approximated from underlying histograms.
 
 .. testoutput::
 
-    <Distribution: size=3, mean=0.00>
+    <Distribution: weight=3, mean=0.00>
 
 .. testcode::
 
@@ -111,7 +111,7 @@ All functions are approximated from underlying histograms.
 
 .. testoutput::
 
-    <Distribution: size=7, mean=5.00>
+    <Distribution: weight=7, mean=5.00>
 
 .. testcode::
 
@@ -121,7 +121,7 @@ All functions are approximated from underlying histograms.
 
 .. testoutput::
 
-    <Distribution: size=13, mean=nan>
+    <Distribution: weight=13, mean=nan>
 
 
 The main feature of Distimate is the ability to estimate common statistical functions:
@@ -220,9 +220,9 @@ with :class:`.Distribution` instances:
 
 .. testoutput::
 
-    0    <Distribution: size=1, mean=5.00>
-    1    <Distribution: size=3, mean=3.33>
-    2     <Distribution: size=7, mean=nan>
+    0    <Distribution: weight=1, mean=5.00>
+    1    <Distribution: weight=3, mean=3.33>
+    2     <Distribution: weight=7, mean=nan>
     dtype: object
 
 
@@ -236,10 +236,10 @@ We can replace histograms in the original DataFrame by the distributions:
 
 .. testoutput::
 
-      color size                                qty
-    0   red    M  <Distribution: size=1, mean=5.00>
-    1  blue    L  <Distribution: size=3, mean=3.33>
-    2  blue    M   <Distribution: size=7, mean=nan>
+      color size                                  qty
+    0   red    M  <Distribution: weight=1, mean=5.00>
+    1  blue    L  <Distribution: weight=3, mean=3.33>
+    2  blue    M   <Distribution: weight=7, mean=nan>
 
 
 The advantage of the new column is that we can use it with the ``dist`` accessor
@@ -271,6 +271,6 @@ Series of :class:`Distribution` instances can be aggregated:
 .. testoutput::
 
     color
-    blue    <Distribution: size=10, mean=nan>
-    red     <Distribution: size=1, mean=5.00>
+    blue    <Distribution: weight=10, mean=nan>
+    red     <Distribution: weight=1, mean=5.00>
     Name: qty, dtype: object
