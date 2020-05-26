@@ -31,7 +31,11 @@ class StatsFunction:
 
 
 def make_pdf(edges, hist):
-    """Create a probability density function (PDF)."""
+    """
+    Create a probability density function (PDF).
+
+    This is an internal implementation of :meth:`.Distributon.pdf`.
+    """
     edges = np.asarray(edges)
     hist = np.asarray(hist)
     total = np.sum(hist)
@@ -62,7 +66,11 @@ def make_pdf(edges, hist):
 
 
 def make_cdf(edges, hist):
-    """Create a cumulative distribution function (CDF)."""
+    """
+    Create a cumulative distribution function (CDF).
+
+    This is an internal implementation of :meth:`.Distributon.cdf`.
+    """
     edges = np.asarray(edges)
     hist = np.asarray(hist)
     cumulative = np.cumsum(hist, dtype=np.float64)
@@ -76,7 +84,11 @@ def make_cdf(edges, hist):
 
 
 def make_quantile(edges, hist):
-    """Create a quantile function."""
+    """
+    Create a quantile function.
+
+    This is an internal implementation of :meth:`.Distributon.quantile`.
+    """
     edges = np.asarray(edges)
     hist = np.asarray(hist)
     cumulative = np.cumsum(hist, dtype=np.float64)
