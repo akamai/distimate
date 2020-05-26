@@ -9,9 +9,14 @@ EDGES = [1, 10, 100]
 
 
 class TestDistribution:
-    def test_invalid_shape(self):
+    def test_invalid_shape_0d(self):
         with pytest.raises(ValueError) as exc_info:
-            Distribution(EDGES, [[0, 0, 0, 0]])
+            Distribution(EDGES, 3)
+        assert str(exc_info.value) == "Histogram must be 1-D array-like."
+
+    def test_invalid_shape_2d(self):
+        with pytest.raises(ValueError) as exc_info:
+            Distribution(EDGES, [[1, 0, 2, 0]])
         assert str(exc_info.value) == "Histogram must be 1-D array-like."
 
     def test_invalid_length(self):
