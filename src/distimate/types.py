@@ -7,7 +7,7 @@ class DistributionType:
     """
     Factory for creating distributions with constant histogram edges.
 
-    :param edges: 1-D array-like, list of histogram edges
+    :param edges: 1-D array-like, ordered histogram edges
     """
 
     __slots__ = ("edges",)

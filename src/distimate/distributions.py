@@ -11,7 +11,7 @@ class Distribution:
     Supports distribution merging and comparison.
     Implements approximation of common statistical functions.
 
-    :param edges: 1-D array-like, list of histogram edges
+    :param edges: 1-D array-like, ordered histogram edges
     :param values: 1-D array-like, histogram, one item longer than *edges*
     """
 
@@ -65,7 +65,7 @@ class Distribution:
         """
         Create a distribution from a list of values.
 
-        :param edges: 1-D array-like
+        :param edges: 1-D array-like, ordered histogram edges
         :param samples: 1-D array-like
         :param weights: optional scalar
             or 1-D array-like with same length as samples.
@@ -80,7 +80,7 @@ class Distribution:
         """
         Create a distribution from a histogram.
 
-        :param edges: 1-D array-like
+        :param edges: 1-D array-like, ordered histogram edges
         :param histogram: 1-D array-like, one item longer than edges
         :return: a new :class:`Distribution`
         """
@@ -91,7 +91,7 @@ class Distribution:
         """
         Create a distribution from a cumulative histogram.
 
-        :param edges: 1-D array-like
+        :param edges: 1-D array-like, ordered histogram edges
         :param cumulative: 1-D array-like, one item longer than edges
         :return: a new :class:`Distribution`
         """
