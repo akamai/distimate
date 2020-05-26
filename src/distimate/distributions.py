@@ -160,15 +160,19 @@ class Distribution:
 
         Return NaN for distributions with no samples.
 
-        - Inner bins are represented by their midpoint (assume that
-          samples are evenly distributed in bins).
+        - Inner bins are represented by their midpoint
+          (assume that samples are evenly distributed in bins).
         - The left outer bin is represented by the leftmost edge
           (assume that there are no samples bellow the supported range).
-        - Return NaN if the rightmost bin is not empty.
+        - Return NaN if the rightmost bin is not empty
+          (because we cannot approximate outliers).
         """
         total = self.values.sum()
         if total == 0 or self.values[-1] != 0:
             return np.nan
+        # For example, if edges are 0, 10, 100
+        # then buckets are [0, 0], (0, 10], (10, 100].
+        # So left = [0, 0, 10] and right = [0, 10, 100].
         left = np.r_[self.edges[0], self.edges[:-1]]
         right = self.edges
         middle = (left + right) / 2
