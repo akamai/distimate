@@ -23,6 +23,10 @@ Statistics
 
 .. module:: distimate.stats
 
+.. autofunction:: make_pdf()
+.. autofunction:: make_cdf()
+.. autofunction:: make_quantile()
+
 .. autoclass:: StatsFunction()
     :members:
     :special-members: __call__
