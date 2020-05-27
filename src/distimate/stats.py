@@ -59,6 +59,8 @@ def make_pdf(edges, hist):
       the PDF returns either zero or NaN,
       depending on whether the last histogram bucket is empty.
 
+    :param edges: 1-D array-like, ordered histogram edges
+    :param hist: 1-D array-like, one item longer than edges
     :return: :class:`.StatsFunction`
     """
     edges = np.asarray(edges)
@@ -115,6 +117,8 @@ def make_cdf(edges, hist):
       the PDF returns either one or NaN,
       depending on whether the last histogram bucket is empty.
 
+    :param edges: 1-D array-like, ordered histogram edges
+    :param hist: 1-D array-like, one item longer than edges
     :return: :class:`.StatsFunction`
     """
     edges = np.asarray(edges)

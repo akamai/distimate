@@ -158,6 +158,9 @@ class Distribution:
         """
         Estimate mean of this distribution.
 
+        The approximated mean is for sanity checks only,
+        it is ineffective and imprecise to estimate mean from a histogram.
+
         Return NaN for distributions with no samples.
 
         - Inner bins are represented by their midpoint
