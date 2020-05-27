@@ -211,21 +211,9 @@ class TestDistribution:
         dist = Distribution(EDGES, [0, 0, 0, 0])
         assert np.isnan(dist.mean())
 
-    def test_mean_of_first_bin(self):
-        dist = Distribution(EDGES, [7, 0, 0, 0])
-        assert dist.mean() == 1
-
-    def test_mean_of_inner_bin(self):
-        dist = Distribution(EDGES, [0, 7, 0, 0])
-        assert dist.mean() == 5.5
-
-    def test_mean_of_last_bin(self):
-        dist = Distribution(EDGES, [0, 0, 0, 7])
-        assert np.isnan(dist.mean())
-
-    def test_mean_of_multiple_bins(self):
-        dist = Distribution(EDGES, [3, 1, 0, 0])
-        assert dist.mean() == pytest.approx((3 * 1 + 1 * 5.5) / 4)
+    def test_mean_of_full(self):
+        dist = Distribution(EDGES, [3, 0, 1, 0])
+        assert dist.mean() == (3 * 1 + 55) / 4
 
     def test_pdf_of_empty(self):
         dist = Distribution(EDGES, [0, 0, 0, 0])
