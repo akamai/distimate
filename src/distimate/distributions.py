@@ -1,6 +1,6 @@
 import numpy as np
 
-from distimate.stats import make_cdf, make_pdf, make_quantile
+from distimate.stats import make_cdf, make_pdf, make_quantile, mean
 
 
 class Distribution:
@@ -161,25 +161,11 @@ class Distribution:
         The approximated mean is for sanity checks only,
         it is ineffective and imprecise to estimate mean from a histogram.
 
-        Return NaN for distributions with no samples.
+        See :func:`.make_mean` for details.
 
-        - Inner bins are represented by their midpoint
-          (assume that samples are evenly distributed in bins).
-        - The left outer bin is represented by the leftmost edge
-          (assume that there are no samples bellow the supported range).
-        - Return NaN if the rightmost bin is not empty
-          (because we cannot approximate outliers).
+        :return: float number
         """
-        total = self.values.sum()
-        if total == 0 or self.values[-1] != 0:
-            return np.nan
-        # For example, if edges are 0, 10, 100
-        # then buckets are [0, 0], (0, 10], (10, 100].
-        # So left = [0, 0, 10] and right = [0, 10, 100].
-        left = np.r_[self.edges[0], self.edges[:-1]]
-        right = self.edges
-        middle = (left + right) / 2
-        return np.sum(self.values[:-1] * middle) / total
+        return mean(self.edges, self.values)
 
     @property
     def pdf(self):

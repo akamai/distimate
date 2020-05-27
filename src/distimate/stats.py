@@ -30,6 +30,40 @@ class StatsFunction:
         return self._interp(v, self.x, self.y, left=self._left, right=self._right)
 
 
+def mean(edges, hist):
+    """
+    Estimate mean from a histogram.
+
+    The approximated mean is for sanity checks only,
+    it is ineffective and imprecise to estimate mean from a histogram.
+
+    Return NaN for distributions with no samples.
+
+    - Inner bins are represented by their midpoint
+      (assume that samples are evenly distributed in bins).
+    - The left outer bin is represented by the leftmost edge
+      (assume that there are no samples bellow the supported range).
+    - Return NaN if the rightmost bin is not empty
+      (because we cannot approximate outliers).
+
+    :param edges: 1-D array-like, ordered histogram edges
+    :param hist: 1-D array-like, one item longer than edges
+    :return: float number
+    """
+    edges = np.asarray(edges)
+    hist = np.asarray(hist)
+    total = hist.sum()
+    if total == 0 or hist[-1] != 0:
+        return np.nan
+    # For example, if edges are 0, 10, 100
+    # then buckets are [0, 0], (0, 10], (10, 100].
+    # So left = [0, 0, 10] and right = [0, 10, 100].
+    left = np.r_[edges[0], edges[:-1]]
+    right = edges
+    middle = (left + right) / 2
+    return np.sum(hist[:-1] * middle) / total
+
+
 def make_pdf(edges, hist):
     """
     Create a probability density function (PDF).
