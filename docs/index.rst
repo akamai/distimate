@@ -25,6 +25,7 @@ This library can estimate common statistical functions (PDF, CDF, quantile) from
 
     install
     tutorial
+    faq
     api
     develop
 
