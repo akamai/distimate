@@ -227,7 +227,7 @@ with :class:`.Distribution` instances:
 .. testcode::
 
     hist_columns = df.columns[2:]
-    dists = pd.Series.dist.from_histogram(dist_type, df[hist_columns])
+    dists = pd.Series.dist.from_histogram(edges, df[hist_columns])
     print(dists)
 
 .. testoutput::

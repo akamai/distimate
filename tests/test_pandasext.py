@@ -46,6 +46,13 @@ class TestDistributionAccessor:
             pd.Series([], index=index, name="price"),
         )
 
+    def test_from_histogram_using_edges(self):
+        histograms = [[1.0, 1.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]]
+        assert_series_equal(
+            pd.Series.dist.from_histogram([0, 10, 100], histograms, name="price"),
+            pd.Series(self.dists, name="price"),
+        )
+
     def test_from_cumulative_array(self):
         cumulatives = [[1, 2, 2.0, 2.0], [0.0, 1.0, 2.0, 2.0]]
         assert_series_equal(
@@ -75,6 +82,13 @@ class TestDistributionAccessor:
         assert_series_equal(
             pd.Series.dist.from_cumulative(dist_type, cumulatives, name="price"),
             pd.Series([], index=index, name="price"),
+        )
+
+    def test_from_cumulative_usign_edges(self):
+        cumulatives = [[1, 2, 2.0, 2.0], [0.0, 1.0, 2.0, 2.0]]
+        assert_series_equal(
+            pd.Series.dist.from_cumulative([0, 10, 100], cumulatives, name="price"),
+            pd.Series(self.dists, name="price"),
         )
 
     def test_to_histogram_of_anonymous_series(self):

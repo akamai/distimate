@@ -1,5 +1,7 @@
 import numpy as np
 
+from distimate.types import DistributionType
+
 try:
     import pandas as pd
 except ImportError:
@@ -37,11 +39,14 @@ class DistributionAccessor(object):
         This is a static method that can be accessed
         as ``pd.Series.dist.from_histogram()``.
 
-        :param dist_type: :class:`.DistributionType` defining histogram buckets
+        :param dist_type: :class:`.DistributionType` or
+            1-D array-like with histogram edges
         :param histograms: :class:`pandas.DataFrame` or 2-D array-like
         :param name: optional name of the series.
         :return: :class:`pandas.Series`
         """
+        if not isinstance(dist_type, DistributionType):
+            dist_type = DistributionType(dist_type)
         index = None
         if isinstance(histograms, pd.DataFrame):
             index = histograms.index
@@ -57,11 +62,14 @@ class DistributionAccessor(object):
         This is a static method that can be accessed
         as ``pd.Series.dist.from_cumulative()``.
 
-        :param dist_type: :class:`.DistributionType` defining histogram buckets
+        :param dist_type: :class:`.DistributionType` or
+            1-D array-like with histogram edges
         :param histograms: :class:`pandas.DataFrame` or 2-D array-like
         :param name: Optional name of the series.
         :return: :class:`pandas.Series`
         """
+        if not isinstance(dist_type, DistributionType):
+            dist_type = DistributionType(dist_type)
         index = None
         if isinstance(cumulatives, pd.DataFrame):
             index = cumulatives.index
