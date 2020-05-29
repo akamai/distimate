@@ -1,21 +1,38 @@
 
-# Distimate - Approximate statistical distributions
+# Distimate - Distributions visualized
 
-Distimate allows you to analyze arbitrary large populations using constant memory.
+Distimate can approximate and plot common statistical functions
+that describe distributions of random variables (PDF, CDF, quantile).
 
-Internally, distributions are approximated using histograms with predefined bucket edges.
-This library can estimate common statistical functions (PDF, CDF, quantile) from the histograms.  
+Distributions are represented as histograms with constant bucket edges.
+This is especially useful when working with large data
+that can be aggregated to histograms at database level.
 
 ```python
-import numpy as np
+import distimate
 import matplotlib.pyplot as plt
-from distimate import DistributionType
 
-edges = [0, 0.1, 0.2, 0.5, 1, 2, 5, 10]
-dist_type = DistributionType(edges)
+edges = [0, 1, 2, 5, 10, 15, 20, 50]
+values = [291, 10, 143, 190, 155, 60, 90, 34, 27]
+dist = distimate.Distribution.from_histogram(edges, values)
 
-dist = dist_type.from_samples(np.random.lognormal(size=10**6))
-plt.plot(dist.cdf.x, dist.cdf.y)
+plt.title(f"x̃={dist.quantile(0.5):.2f}")
+plt.xlim(0, 50)
+plt.ylim(0, 1)
+plt.plot(dist.cdf.x, dist.cdf.y, label="CDF")
+plt.plot(dist.pdf.x, dist.pdf.y, label="PDF")
+plt.legend(loc="lower right")
 ```
+
+Features:
+
+* Histogram creation and merging
+* Probability density function (PDF)
+* Cumulative distribution function (CDF)
+* Quantile (percentile) function
+* Pandas integration.
+
+
+## Documentation
 
 All documentation is in the `docs` directory.

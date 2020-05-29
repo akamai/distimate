@@ -75,4 +75,4 @@ Why does Distimate approximate left and right out-of-range values differently?
     For example, if most samples are zero, median should return zero.
     This would not be possible if the first bucket contained negative values.
 
-    Sample in the last buckeet can be arbitrary high, so no approximation is possible.
+    Sample in the last bucket can be arbitrary high, so no approximation is possible.

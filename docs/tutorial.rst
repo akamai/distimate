@@ -125,7 +125,6 @@ Distributions
 
 All approximations from histograms require histogram edges and values.
 The :class:`.Distribution` class is a wrapper that holds both.
-
 It provides methods for updating or combining distributions:
 
 .. testcode::
@@ -180,27 +179,19 @@ Optional weights are supported:
 
 It is common to define histogram edges once and reuse them between distributions.
 The :class:`.DistributionType` class can remember the histogram edges.
+It can be used as a factory for creating distributions:
 
 .. testcode::
 
     dist_type = distimate.DistributionType([0, 10, 50, 100])
     print(dist_type.edges)
 
-.. testoutput::
-
-    [  0  10  50 100]
-
-
-Once we defined the histogram edges, we can create a :class:`.Distribution` instance.
-Each distribution instance stores a histogram with one more bucket than it has edges.
-
-.. testcode::
-
     dist = dist_type.from_samples([0, 7, 10, 107])
     print(dist.edges, dist.values)
 
 .. testoutput::
 
+    [  0  10  50 100]
     [  0  10  50 100] [1. 2. 0. 0. 1.]
 
 

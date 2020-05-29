@@ -4,7 +4,6 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-import datetime as dt
 
 # -- Path setup --------------------------------------------------------------
 
@@ -20,8 +19,8 @@ import datetime as dt
 # -- Project information -----------------------------------------------------
 
 project = 'Distimate'
-description = 'Approximate distributions'
-copyright = '%s Akamai' % dt.date.today().year
+description = 'Distributions visualized'
+copyright = '2020 Akamai'
 author = 'Miloslav Pojman'
 
 
@@ -34,6 +33,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.viewcode',
+    'matplotlib.sphinxext.plot_directive',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -70,3 +70,7 @@ html_theme_options = {
 # -- Extension configuration -------------------------------------------------
 
 autodoc_member_order = 'bysource'
+
+plot_include_source = True
+plot_html_show_source_link = False
+plot_html_show_formats = False

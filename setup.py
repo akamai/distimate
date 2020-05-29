@@ -10,7 +10,7 @@ setup(
     version="0.0.dev",
     author="Miloslav Pojman",
     author_email="mpojman@akamai.com",
-    description="Approximate statistical distributions",
+    description="Distributions visualized",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
