@@ -1,6 +1,6 @@
 import numpy as np
 
-from distimate.stats import make_cdf, make_pdf, make_quantile, mean
+from distimate.stats import CDF, PDF, Quantile, mean
 
 
 class Distribution:
@@ -163,7 +163,7 @@ class Distribution:
         The approximated mean is for sanity checks only,
         it is ineffective and imprecise to estimate mean from a histogram.
 
-        See :func:`.make_mean` for details.
+        See :func:`.mean` for details.
 
         :return: float number
         """
@@ -174,30 +174,30 @@ class Distribution:
         """
         Probability density function (PDF) of this distribution.
 
-        See :func:`.make_pdf` for details.
+        See :class:`.PDF` for details.
 
-        :return: :class:`.StatsFunction`
+        :return: a :class:`.PDF` instance
         """
-        return make_pdf(self.edges, self.values)
+        return PDF(self.edges, self.values)
 
     @property
     def cdf(self):
         """
         Cumulative distribution function (CDF) of this distribution.
 
-        See :func:`.make_cdf` for details.
+        See :class:`.CDF` for details.
 
-        :return: :class:`.StatsFunction`
+        :return: a :class:`.CDF` instance
         """
-        return make_cdf(self.edges, self.values)
+        return CDF(self.edges, self.values)
 
     @property
     def quantile(self):
         """
         Quantile function of this distribution.
 
-        See :func:`.make_quantile` for details.
+        See :class:`.Quantile` for details.
 
-        :return: :class:`.StatsFunction`
+        :return: a :class:`.Quantile` instance
         """
-        return make_quantile(self.edges, self.values)
+        return Quantile(self.edges, self.values)

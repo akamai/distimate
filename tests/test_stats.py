@@ -33,7 +33,7 @@ class TestMean:
 
 class TestPDF:
     def test_pdf_of_empty(self):
-        pdf = distimate.make_pdf([1, 10, 100], [0, 0, 0, 0])
+        pdf = distimate.PDF([1, 10, 100], [0, 0, 0, 0])
         assert_allclose(pdf.x, [1, 100])
         assert_allclose(pdf.y, [np.nan, np.nan])
         assert_func_values(
@@ -43,7 +43,7 @@ class TestPDF:
         )
 
     def test_pdf_of_first_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [7, 0, 0, 0])
+        pdf = distimate.PDF([1, 10, 100], [7, 0, 0, 0])
         assert_allclose(pdf.x, [1, 1, 100])
         assert_allclose(pdf.y, [np.nan, 0, 0])
         assert_func_values(
@@ -51,7 +51,7 @@ class TestPDF:
         )
 
     def test_pdf_of_last_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [0, 0, 0, 7])
+        pdf = distimate.PDF([1, 10, 100], [0, 0, 0, 7])
         assert_allclose(pdf.x, [1, 100])
         assert_allclose(pdf.y, [0, 0])
         assert_func_values(
@@ -59,7 +59,7 @@ class TestPDF:
         )
 
     def test_pdf_of_inner_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100, 1000], [0, 0, 7, 0, 0])
+        pdf = distimate.PDF([1, 10, 100, 1000], [0, 0, 7, 0, 0])
         assert_allclose(pdf.x, [1, 10, 10, 100, 100, 1000])
         assert_allclose(pdf.y, [0, 0, 1 / 90, 1 / 90, 0, 0])
         assert_func_values(
@@ -69,7 +69,7 @@ class TestPDF:
         )
 
     def test_pdf_of_first_inner_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [0, 7, 0, 0])
+        pdf = distimate.PDF([1, 10, 100], [0, 7, 0, 0])
         assert_allclose(pdf.x, [1, 1, 10, 10, 100])
         assert_allclose(pdf.y, [0, 1 / 9, 1 / 9, 0, 0])
         assert_func_values(
@@ -77,7 +77,7 @@ class TestPDF:
         )
 
     def test_pdf_of_last_inner_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [0, 0, 7, 0])
+        pdf = distimate.PDF([1, 10, 100], [0, 0, 7, 0])
         assert_allclose(pdf.x, [1, 10, 10, 100])
         assert_allclose(pdf.y, [0, 0, 1 / 90, 1 / 90])
         assert_func_values(
@@ -85,7 +85,7 @@ class TestPDF:
         )
 
     def test_pdf_of_first_and_next_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [3, 1, 0, 0])
+        pdf = distimate.PDF([1, 10, 100], [3, 1, 0, 0])
         assert_allclose(pdf.x, [1, 1, 10, 10, 100])
         assert_allclose(pdf.y, [np.nan, 1 / 4 / 9, 1 / 4 / 9, 0, 0])
         assert_func_values(
@@ -95,7 +95,7 @@ class TestPDF:
         )
 
     def test_pdf_of_first_and_inner_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [3, 0, 1, 0])
+        pdf = distimate.PDF([1, 10, 100], [3, 0, 1, 0])
         assert_allclose(pdf.x, [1, 1, 10, 10, 100])
         assert_allclose(pdf.y, [np.nan, 0, 0, 1 / 4 / 90, 1 / 4 / 90])
         assert_func_values(
@@ -105,7 +105,7 @@ class TestPDF:
         )
 
     def test_pdf_of_first_and_last_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [3, 0, 0, 1])
+        pdf = distimate.PDF([1, 10, 100], [3, 0, 0, 1])
         assert_allclose(pdf.x, [1, 1, 100])
         assert_allclose(pdf.y, [np.nan, 0, 0])
         assert_func_values(
@@ -113,7 +113,7 @@ class TestPDF:
         )
 
     def test_pdf_of_last_and_prev_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [0, 0, 3, 1])
+        pdf = distimate.PDF([1, 10, 100], [0, 0, 3, 1])
         assert_allclose(pdf.x, [1, 10, 10, 100])
         assert_allclose(pdf.y, [0, 0, 3 / 4 / 90, 3 / 4 / 90])
         assert_func_values(
@@ -123,7 +123,7 @@ class TestPDF:
         )
 
     def test_pdf_of_last_and_inner_bin(self):
-        pdf = distimate.make_pdf([1, 10, 100], [0, 3, 0, 1])
+        pdf = distimate.PDF([1, 10, 100], [0, 3, 0, 1])
         assert_allclose(pdf.x, [1, 1, 10, 10, 100])
         assert_allclose(pdf.y, [0, 3 / 4 / 9, 3 / 4 / 9, 0, 0])
         assert_func_values(
@@ -133,7 +133,7 @@ class TestPDF:
         )
 
     def test_pdf_of_inner_bins(self):
-        pdf = distimate.make_pdf([1, 10, 100], [0, 3, 1, 0])
+        pdf = distimate.PDF([1, 10, 100], [0, 3, 1, 0])
         assert_allclose(pdf.x, [1, 1, 10, 10, 100])
         assert_allclose(pdf.y, [0, 3 / 4 / 9, 3 / 4 / 9, 1 / 4 / 90, 1 / 4 / 90])
         assert_func_values(
@@ -143,7 +143,7 @@ class TestPDF:
         )
 
     def test_pdf_of_inner_bins_with_gap(self):
-        pdf = distimate.make_pdf([1, 10, 100, 1000], [0, 3, 0, 1, 0])
+        pdf = distimate.PDF([1, 10, 100, 1000], [0, 3, 0, 1, 0])
         assert_allclose(pdf.x, [1, 1, 10, 10, 100, 100, 1000])
         assert_allclose(
             pdf.y, [0, 3 / 4 / 9, 3 / 4 / 9, 0, 0, 1 / 4 / 900, 1 / 4 / 900]
@@ -157,7 +157,7 @@ class TestPDF:
 
 class TestCDF:
     def test_cdf_of_empty(self):
-        cdf = distimate.make_cdf([1, 10, 100], [0, 0, 0, 0])
+        cdf = distimate.CDF([1, 10, 100], [0, 0, 0, 0])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [np.nan, np.nan, np.nan])
         assert_func_values(
@@ -167,7 +167,7 @@ class TestCDF:
         )
 
     def test_cdf_of_first_bin(self):
-        cdf = distimate.make_cdf([1, 10, 100], [7, 0, 0, 0])
+        cdf = distimate.CDF([1, 10, 100], [7, 0, 0, 0])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [1, 1, 1])
         assert_func_values(
@@ -175,7 +175,7 @@ class TestCDF:
         )
 
     def test_cdf_of_last_bin(self):
-        cdf = distimate.make_cdf([1, 10, 100], [0, 0, 0, 7])
+        cdf = distimate.CDF([1, 10, 100], [0, 0, 0, 7])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [0, 0, 0])
         assert_func_values(
@@ -183,7 +183,7 @@ class TestCDF:
         )
 
     def test_cdf_of_inner_bin(self):
-        cdf = distimate.make_cdf([1, 10, 100], [0, 7, 0, 0])
+        cdf = distimate.CDF([1, 10, 100], [0, 7, 0, 0])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [0, 1, 1])
         assert_func_values(
@@ -191,7 +191,7 @@ class TestCDF:
         )
 
     def test_cdf_of_first_and_next_bin(self):
-        cdf = distimate.make_cdf([1, 10, 100], [3, 1, 0, 0])
+        cdf = distimate.CDF([1, 10, 100], [3, 1, 0, 0])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [3 / 4, 1, 1])
         assert_func_values(
@@ -199,7 +199,7 @@ class TestCDF:
         )
 
     def test_cdf_of_first_and_inner_bin(self):
-        cdf = distimate.make_cdf([1, 10, 100], [3, 0, 1, 0])
+        cdf = distimate.CDF([1, 10, 100], [3, 0, 1, 0])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [3 / 4, 3 / 4, 1])
         assert_func_values(
@@ -207,7 +207,7 @@ class TestCDF:
         )
 
     def test_cdf_of_first_and_last_bin(self):
-        cdf = distimate.make_cdf([1, 10, 100], [3, 0, 0, 1])
+        cdf = distimate.CDF([1, 10, 100], [3, 0, 0, 1])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [3 / 4, 3 / 4, 3 / 4])
         assert_func_values(
@@ -217,7 +217,7 @@ class TestCDF:
         )
 
     def test_cdf_of_last_and_inner_bin(self):
-        cdf = distimate.make_cdf([1, 10, 100], [0, 3, 0, 1])
+        cdf = distimate.CDF([1, 10, 100], [0, 3, 0, 1])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [0, 3 / 4, 3 / 4])
         assert_func_values(
@@ -227,7 +227,7 @@ class TestCDF:
         )
 
     def test_cdf_of_last_and_prev_bin(self):
-        cdf = distimate.make_cdf([1, 10, 100], [0, 0, 3, 1])
+        cdf = distimate.CDF([1, 10, 100], [0, 0, 3, 1])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [0, 0, 3 / 4])
         assert_func_values(
@@ -235,7 +235,7 @@ class TestCDF:
         )
 
     def test_cdf_of_inner_bins(self):
-        cdf = distimate.make_cdf([1, 10, 100], [0, 3, 1, 0])
+        cdf = distimate.CDF([1, 10, 100], [0, 3, 1, 0])
         assert_allclose(cdf.x, [1, 10, 100])
         assert_allclose(cdf.y, [0, 3 / 4, 1])
         assert_func_values(
@@ -243,7 +243,7 @@ class TestCDF:
         )
 
     def test_cdf_of_inner_bins_with_gap(self):
-        cdf = distimate.make_cdf([1, 10, 100, 1000], [0, 3, 0, 1, 0])
+        cdf = distimate.CDF([1, 10, 100, 1000], [0, 3, 0, 1, 0])
         assert_allclose(cdf.x, [1, 10, 100, 1000])
         assert_allclose(cdf.y, [0, 3 / 4, 3 / 4, 1])
         assert_func_values(
@@ -255,7 +255,7 @@ class TestCDF:
 
 class TestQuantileFunction:
     def test_quantile_of_empty(self):
-        quantile = distimate.make_quantile([1, 10, 100], [0, 0, 0, 0, 0])
+        quantile = distimate.Quantile([1, 10, 100], [0, 0, 0, 0, 0])
         assert_allclose(quantile.x, [0, 1])
         assert_allclose(quantile.y, [np.nan, np.nan])
         assert_func_values(
@@ -263,7 +263,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_first_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [7, 0, 0, 0])
+        quantile = distimate.Quantile([1, 10, 100], [7, 0, 0, 0])
         assert_allclose(quantile.x, [0, 1])
         assert_allclose(quantile.y, [1, 1])
         assert_func_values(
@@ -271,7 +271,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_last_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [0, 0, 0, 7])
+        quantile = distimate.Quantile([1, 10, 100], [0, 0, 0, 7])
         assert_allclose(quantile.x, [0, 1])
         assert_allclose(quantile.y, [np.nan, np.nan])
         assert_func_values(
@@ -279,7 +279,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_inner_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100, 1000], [0, 0, 7, 0, 0])
+        quantile = distimate.Quantile([1, 10, 100, 1000], [0, 0, 7, 0, 0])
         assert_allclose(quantile.x, [0, 1])
         assert_allclose(quantile.y, [10, 100])
         assert_func_values(
@@ -287,7 +287,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_first_inner_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [0, 7, 0, 0])
+        quantile = distimate.Quantile([1, 10, 100], [0, 7, 0, 0])
         assert_allclose(quantile.x, [0, 1])
         assert_allclose(quantile.y, [1, 10])
         assert_func_values(
@@ -295,7 +295,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_last_inner_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [0, 0, 7, 0])
+        quantile = distimate.Quantile([1, 10, 100], [0, 0, 7, 0])
         assert_allclose(quantile.x, [0, 1])
         assert_allclose(quantile.y, [10, 100])
         assert_func_values(
@@ -303,7 +303,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_first_and_next_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [3, 1, 0, 0])
+        quantile = distimate.Quantile([1, 10, 100], [3, 1, 0, 0])
         assert_allclose(quantile.x, [0, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 1, 10])
         assert_func_values(
@@ -311,7 +311,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_first_and_inner_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [3, 0, 1, 0])
+        quantile = distimate.Quantile([1, 10, 100], [3, 0, 1, 0])
         assert_allclose(quantile.x, [0, 3 / 4, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 1, 10, 100])
         assert_func_values(
@@ -319,7 +319,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_first_and_last_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [3, 0, 0, 1])
+        quantile = distimate.Quantile([1, 10, 100], [3, 0, 0, 1])
         assert_allclose(quantile.x, [0, 3 / 4, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 1, 100, np.nan])
         assert_func_values(
@@ -327,7 +327,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_last_and_inner_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [0, 3, 0, 1])
+        quantile = distimate.Quantile([1, 10, 100], [0, 3, 0, 1])
         assert_allclose(quantile.x, [0, 3 / 4, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 10, 100, np.nan])
         assert_func_values(
@@ -335,7 +335,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_last_and_prev_bin(self):
-        quantile = distimate.make_quantile([1, 10, 100], [0, 0, 3, 1])
+        quantile = distimate.Quantile([1, 10, 100], [0, 0, 3, 1])
         assert_allclose(quantile.x, [0, 3 / 4, 1])
         assert_allclose(quantile.y, [10, 100, np.nan])
         assert_func_values(
@@ -343,7 +343,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_inner_bins(self):
-        quantile = distimate.make_quantile([1, 10, 100], [0, 3, 1, 0])
+        quantile = distimate.Quantile([1, 10, 100], [0, 3, 1, 0])
         assert_allclose(quantile.x, [0, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 10, 100])
         assert_func_values(
@@ -351,7 +351,7 @@ class TestQuantileFunction:
         )
 
     def test_quantile_of_inner_bins_with_gap(self):
-        quantile = distimate.make_quantile([1, 10, 100, 1000], [0, 3, 0, 1, 0])
+        quantile = distimate.Quantile([1, 10, 100, 1000], [0, 3, 0, 1, 0])
         assert_allclose(quantile.x, [0, 3 / 4, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 10, 100, 1000])
         assert_func_values(

@@ -2,18 +2,26 @@
 API
 ===
 
-Statistics
-----------
+Statistical functions
+---------------------
 
 .. module:: distimate.stats
 
 .. autofunction:: mean()
-.. autofunction:: make_pdf()
-.. autofunction:: make_cdf()
-.. autofunction:: make_quantile()
 
-.. autoclass:: StatsFunction()
+.. autoclass:: PDF()
     :members:
+    :inherited-members:
+    :special-members: __call__
+
+.. autoclass:: CDF()
+    :members:
+    :inherited-members:
+    :special-members: __call__
+
+.. autoclass:: Quantile()
+    :members:
+    :inherited-members:
     :special-members: __call__
 
 

@@ -1,14 +1,14 @@
 from .distributions import Distribution
 from .pandasext import register_to_pandas
-from .stats import make_cdf, make_pdf, make_quantile, mean
+from .stats import CDF, PDF, Quantile, mean
 from .types import DistributionType
 
 __all__ = [
     "Distribution",
     "DistributionType",
-    "make_cdf",
-    "make_pdf",
-    "make_quantile",
+    "CDF",
+    "PDF",
+    "Quantile",
     "mean",
 ]
 

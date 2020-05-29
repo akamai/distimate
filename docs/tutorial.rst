@@ -2,8 +2,8 @@
 Tutorial
 ========
 
-Statistics
-----------
+Statistical functions
+---------------------
 
 Distimate can approximate common statistical functions from a histogram.
 
@@ -20,9 +20,9 @@ Distimate can approximate common statistical functions from a histogram.
 Distimate can estimate the following functions:
 
 * :func:`.mean` (ineffective and imprecise, for sanity checks only)
-* Probability density function (PDF) - :func:`.make_pdf`
-* Cumulative distribution function (CDF) - :func:`.make_cdf`
-* Quantile (percentile) function - :func:`.make_quantile`
+* Probability density function (PDF) - :class:`.PDF`
+* Cumulative distribution function (CDF) - :class:`.CDF`
+* Quantile (percentile) function - :class:`.Quantile`
 
 Each of the above functions can be either plotted as an object with ``.x`` and ``.y`` attributes,
 or it can be called to approximate a function value at arbitrary point.
@@ -33,7 +33,7 @@ or it can be called to approximate a function value at arbitrary point.
 
     edges = [0, 10, 50, 100]
 
-    cdf = distimate.make_cdf(edges, [4, 3, 1, 0, 2])
+    cdf = distimate.CDF(edges, [4, 3, 1, 0, 2])
     print(cdf.x)
     print(cdf.y)
 
@@ -104,7 +104,7 @@ In the following example, a distribution median can be anything between 10 and 5
 
 .. testcode::
 
-    quantile = distimate.make_quantile(edges, [0, 5, 0, 5, 0])
+    quantile = distimate.Quantile(edges, [0, 5, 0, 5, 0])
 
     print(quantile.x, quantile.y)
     print(quantile(0.5))
