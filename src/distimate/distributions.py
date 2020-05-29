@@ -15,26 +15,24 @@ class Distribution:
     :param values: 1-D array-like, histogram, one item longer than *edges*
     """
 
-    __slots__ = ("edges", "values")
+    __slots__ = ("_edges", "_values")
 
-    dtype = np.float64
+    _dtype = np.float64
 
     def __init__(self, edges, values=None):
-        #: Edges of the underlying histogram.
-        self.edges = np.asarray(edges)
-        size = len(self.edges) + 1
+        self._edges = np.asarray(edges)
+        size = len(self._edges) + 1
         if values is None:
-            values = np.zeros(size, dtype=self.dtype)
+            values = np.zeros(size, dtype=self._dtype)
         else:
-            values = np.asarray(values, dtype=self.dtype)
+            values = np.asarray(values, dtype=self._dtype)
             if values.ndim != 1:
                 raise ValueError("Histogram must be 1-D array-like.")
             if len(values) != size:
                 raise ValueError("Histogram must have len(edges) + 1 items.")
             if not np.all(values >= 0):
                 raise ValueError("Histogram values must not be negative.")
-        #: Values of the underlying histogram.
-        self.values = values
+        self._values = values
 
     def __repr__(self):
         name = type(self).__name__
@@ -43,22 +41,40 @@ class Distribution:
     def __eq__(self, other):
         """Return whether distribution histograms are equal."""
         if isinstance(other, Distribution):
-            return np.array_equal(self.values, other.values)
+            return np.array_equal(self._values, other._values)
         return NotImplemented
 
     def __add__(self, other):
         """Combine this distribution with other distribution."""
         if isinstance(other, Distribution):
-            values = self.values + other.values
+            values = self._values + other._values
             return Distribution(self.edges, values)
         return NotImplemented
 
     def __iadd__(self, other):
         """Combine this distribution with other distribution inplace."""
         if isinstance(other, Distribution):
-            self.values += other.values
+            self._values += other._values
             return self
         return NotImplemented
+
+    @property
+    def edges(self):
+        """
+        Edges of the underlying histogram
+
+        :return: :class: 1-D `numpy.array`, ordered histogram edges
+        """
+        return self._edges
+
+    @property
+    def values(self):
+        """
+        Values of the underlying histogram.
+
+        :return: 1-D `numpy.array`, histogram values
+        """
+        return self._values
 
     @classmethod
     def from_samples(cls, edges, samples, weights=None):
@@ -104,7 +120,7 @@ class Distribution:
 
         :return: 1-D :class:`numpy.array`
         """
-        return self.values.copy()
+        return self._values.copy()
 
     def to_cumulative(self):
         """
@@ -112,7 +128,7 @@ class Distribution:
 
         :return: 1-D :class:`numpy.array`
         """
-        return np.cumsum(self.values)
+        return np.cumsum(self._values)
 
     def add(self, value, weight=None):
         """
@@ -125,8 +141,8 @@ class Distribution:
             raise ValueError("Value must be a scalar.")
         if weight is None:
             weight = 1
-        index = self.edges.searchsorted(value)
-        self.values[index] += weight
+        index = self._edges.searchsorted(value)
+        self._values[index] += weight
 
     def update(self, values, weights=None):
         """
@@ -141,10 +157,10 @@ class Distribution:
             raise ValueError("Values must be 1-D array-like.")
         if weights is None:
             weights = 1
-        index = self.edges.searchsorted(values)
+        index = self._edges.searchsorted(values)
         # Cannot use self._hist[index] += weights because it does
         # not accumulate if index contains duplicate values.
-        np.add.at(self.values, index, weights)
+        np.add.at(self._values, index, weights)
 
     @property
     def weight(self):
@@ -153,7 +169,7 @@ class Distribution:
 
         :return: float number
         """
-        return self.values.sum()
+        return self._values.sum()
 
     @property
     def mean(self):
@@ -167,7 +183,7 @@ class Distribution:
 
         :return: float number
         """
-        return mean(self.edges, self.values)
+        return mean(self._edges, self._values)
 
     @property
     def pdf(self):
@@ -178,7 +194,7 @@ class Distribution:
 
         :return: a :class:`.PDF` instance
         """
-        return PDF(self.edges, self.values)
+        return PDF(self._edges, self._values)
 
     @property
     def cdf(self):
@@ -189,7 +205,7 @@ class Distribution:
 
         :return: a :class:`.CDF` instance
         """
-        return CDF(self.edges, self.values)
+        return CDF(self._edges, self._values)
 
     @property
     def quantile(self):
@@ -200,4 +216,4 @@ class Distribution:
 
         :return: a :class:`.Quantile` instance
         """
-        return Quantile(self.edges, self.values)
+        return Quantile(self._edges, self._values)

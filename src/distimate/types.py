@@ -10,12 +10,21 @@ class DistributionType:
     :param edges: 1-D array-like, ordered histogram edges
     """
 
-    __slots__ = ("edges",)
+    __slots__ = ("_edges",)
 
     _dist_cls = Distribution
 
     def __init__(self, edges):
-        self.edges = np.asarray(edges)
+        self._edges = np.asarray(edges)
+
+    @property
+    def edges(self):
+        """
+        Edges of the underlying histogram
+
+        :return: :class: 1-D `numpy.array`, ordered histogram edges
+        """
+        return self._edges
 
     def empty(self):
         """
@@ -23,7 +32,7 @@ class DistributionType:
 
         :return: a new :class:`Distribution`
         """
-        return self._dist_cls(self.edges)
+        return self._dist_cls(self._edges)
 
     def from_samples(self, samples, weights=None):
         """
@@ -33,7 +42,7 @@ class DistributionType:
         :param weights: optional 1-D array-like
         :return: a new :class:`Distribution`
         """
-        return self._dist_cls.from_samples(self.edges, samples, weights)
+        return self._dist_cls.from_samples(self._edges, samples, weights)
 
     def from_histogram(self, histogram):
         """
@@ -42,7 +51,7 @@ class DistributionType:
         :param histogram: 1-D array-like
         :return: a new :class:`Distribution`
         """
-        return self._dist_cls.from_histogram(self.edges, histogram)
+        return self._dist_cls.from_histogram(self._edges, histogram)
 
     def from_cumulative(self, cumulative):
         """
@@ -51,4 +60,4 @@ class DistributionType:
         :param cumulative: 1-D array-like
         :return: a new :class:`Distribution`
         """
-        return self._dist_cls.from_cumulative(self.edges, cumulative)
+        return self._dist_cls.from_cumulative(self._edges, cumulative)

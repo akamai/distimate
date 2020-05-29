@@ -32,7 +32,7 @@ Distributions
 
 .. autoclass:: Distribution
     :members:
-    :special-members: __eq__, __add__
+    :special-members: __eq__, __add__, __iadd__
 
 
 .. module:: distimate.types
