@@ -139,11 +139,11 @@ class TestDistribution:
 
     def test_weight_of_empty(self):
         dist = Distribution(EDGES)
-        assert dist.weight() == 0
+        assert dist.weight == 0
 
     def test_weight_of_full(self):
         dist = Distribution(EDGES, [1, 2, 0, 4])
-        assert dist.weight() == 7
+        assert dist.weight == 7
 
     def test_add_lt_first_edge(self):
         dist = Distribution(EDGES)
@@ -209,11 +209,11 @@ class TestDistribution:
 
     def test_mean_of_empty(self):
         dist = Distribution(EDGES, [0, 0, 0, 0])
-        assert np.isnan(dist.mean())
+        assert np.isnan(dist.mean)
 
     def test_mean_of_full(self):
         dist = Distribution(EDGES, [3, 0, 1, 0])
-        assert dist.mean() == (3 * 1 + 55) / 4
+        assert dist.mean == (3 * 1 + 55) / 4
 
     def test_pdf_of_empty(self):
         dist = Distribution(EDGES, [0, 0, 0, 0])

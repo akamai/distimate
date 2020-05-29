@@ -38,7 +38,7 @@ class Distribution:
 
     def __repr__(self):
         name = type(self).__name__
-        return f"<{name}: weight={self.weight():.0f}, mean={self.mean():.2f}>"
+        return f"<{name}: weight={self.weight:.0f}, mean={self.mean:.2f}>"
 
     def __eq__(self, other):
         """Return whether distribution histograms are equal."""
@@ -114,14 +114,6 @@ class Distribution:
         """
         return np.cumsum(self.values)
 
-    def weight(self):
-        """
-        Return a total weight of samples in this distribution.
-
-        :return: float number
-        """
-        return self.values.sum()
-
     def add(self, value, weight=None):
         """
         Add a new item to this distribution.
@@ -154,6 +146,16 @@ class Distribution:
         # not accumulate if index contains duplicate values.
         np.add.at(self.values, index, weights)
 
+    @property
+    def weight(self):
+        """
+        Return a total weight of samples in this distribution.
+
+        :return: float number
+        """
+        return self.values.sum()
+
+    @property
     def mean(self):
         """
         Estimate mean of this distribution.
