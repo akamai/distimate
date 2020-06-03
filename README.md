@@ -1,11 +1,11 @@
 
 # Distimate - Distributions visualized
 
-Distimate can approximate and plot common statistical functions
-that describe distributions of random variables (PDF, CDF, quantile).
+Distimate approximates and plots common statistical functions from histograms.
 
-Distributions are represented as histograms with constant bucket edges.
-This is especially useful when working with large data
+Distimate can aggregate empirical distributions of random variables.
+The distributions are represented as histograms with user-defined bucket edges.
+This is especially useful when working with large datasets
 that can be aggregated to histograms at database level.
 
 ```python

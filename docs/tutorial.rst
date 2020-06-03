@@ -9,7 +9,7 @@ Distimate can approximate common statistical functions from a histogram.
 
 .. note::
 
-    Distimate is most useful in situation
+    Distimate is most useful in situations
     when it would be ineffective to retrieve a full dataset.
 
     For example, we can easily aggregate millions of database rows
@@ -17,7 +17,7 @@ Distimate can approximate common statistical functions from a histogram.
     The selected 100 points will provide enough detail for smooth CDF plots.
 
 
-Distimate can estimate the following functions:
+Distimate supports the following functions:
 
 * :func:`.mean` (ineffective and imprecise, for sanity checks only)
 * Probability density function (PDF) - :class:`.PDF`
