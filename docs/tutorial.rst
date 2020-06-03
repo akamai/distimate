@@ -123,12 +123,10 @@ In the following example, a distribution median can be anything between 10 and 5
 .. testoutput::
 
     [0.  0.5 0.5 1. ] [  0.  10.  50. 100.]
-    10.0
+    30.0
 
-A plot will contain a vertical line,
-but a function call returns the lowest of possible values, as stated in the method documentation.
-
-
+A plot will contain a vertical line.
+When called, the function returns middle of possible values.
 
 
 Distributions

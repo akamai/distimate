@@ -1,5 +1,31 @@
 import numpy as np
 
+interp_right = np.interp
+
+
+def interp_left(v, xp, fp, left=None, right=None):
+    """
+    Like :func:`numpy.interp` but uses lowest of equal xp values.
+
+    >>> np.interp(10, [0, 10, 10, 20], [1, 2, 3, 4])
+    3.0
+    >>> interp_left(10, [0, 10, 10, 20], [1, 2, 3, 4])
+    2.0
+    """
+    v = np.asarray(v)
+    xp = np.asarray(xp)
+    fp = np.asarray(fp)
+    return np.interp(-v, -xp[::-1], fp[::-1], left=right, right=left)
+
+
+def interp_middle(v, xp, fp, left=None, right=None):
+    """
+    Return a midpoint between ``interp_left`` and ``interp_right``.
+    """
+    low = interp_left(v, xp, fp, left=left, right=right)
+    high = np.interp(v, xp, fp, left=left, right=right)
+    return (low + high) / 2
+
 
 class _StatsFunction:
     """
@@ -11,7 +37,7 @@ class _StatsFunction:
 
     __slots__ = ("_x", "_y", "_left", "_right", "_interp")
 
-    def __init__(self, x, y, *, left=np.nan, right=np.nan, interp=np.interp):
+    def __init__(self, x, y, *, left=np.nan, right=np.nan, interp=interp_right):
         self._x = x
         self._y = y
         self._left = left
@@ -201,8 +227,8 @@ class Quantile(_StatsFunction):
      the quantile value can return the first edge for many inputs.
    - If an inner histogram bucket is empty,
      then the quantile value can be ambiguous.
-     In that case, duplicate x-values will be plotted. When called,
-     the quantile function will return the lowest of possible results.
+     In that case, duplicate x-values will be plotted.
+     When called, the quantile function will a middle of possible values.
    - The function returns NaN for values outside of the <0, 1> range.
    - When called with zero,
      returns the left edge of the smallest non-empty bucket.
@@ -236,19 +262,4 @@ class Quantile(_StatsFunction):
             mask = diffs[:-1] | diffs[1:]
             x = x_all[mask]
             y = y_all[mask]
-        super().__init__(x, y, interp=interp_left)
-
-
-def interp_left(v, xp, fp, left=None, right=None):
-    """
-    Like ``np.interp`` but uses lowest of equal xp values.
-
-    >>> np.interp(10, [0, 10, 10, 20], [1, 2, 3, 4])
-    3.0
-    >>> interp_left(10, [0, 10, 10, 20], [1, 2, 3, 4])
-    2.0
-    """
-    v = np.asarray(v)
-    xp = np.asarray(xp)
-    fp = np.asarray(fp)
-    return np.interp(-v, -xp[::-1], fp[::-1], left=right, right=left)
+        super().__init__(x, y, interp=interp_middle)

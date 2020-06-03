@@ -6,6 +6,7 @@ import distimate
 
 
 def assert_func_values(f, x, y):
+    __tracebackhide__ = True
     for xv, yv in zip(x, y):
         actual = f(xv)
         assert actual == pytest.approx(
@@ -315,7 +316,7 @@ class TestQuantileFunction:
         assert_allclose(quantile.x, [0, 3 / 4, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 1, 10, 100])
         assert_func_values(
-            quantile, [0, 3 / 8, 3 / 4, 7 / 8, 1], [1, 1, 1, 55, 100],
+            quantile, [0, 3 / 8, 3 / 4, 7 / 8, 1], [1, 1, 5.5, 55, 100],
         )
 
     def test_quantile_of_first_and_last_bin(self):
@@ -323,7 +324,7 @@ class TestQuantileFunction:
         assert_allclose(quantile.x, [0, 3 / 4, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 1, 100, np.nan])
         assert_func_values(
-            quantile, [0, 3 / 8, 3 / 4, 7 / 8, 1], [1, 1, 1, np.nan, np.nan],
+            quantile, [0, 3 / 8, 3 / 4, 7 / 8, 1], [1, 1, 101 / 2, np.nan, np.nan],
         )
 
     def test_quantile_of_last_and_inner_bin(self):
@@ -331,7 +332,7 @@ class TestQuantileFunction:
         assert_allclose(quantile.x, [0, 3 / 4, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 10, 100, np.nan])
         assert_func_values(
-            quantile, [0, 3 / 8, 3 / 4, 7 / 8, 1], [1, 5.5, 10, np.nan, np.nan],
+            quantile, [0, 3 / 8, 3 / 4, 7 / 8, 1], [1, 5.5, 55, np.nan, np.nan],
         )
 
     def test_quantile_of_last_and_prev_bin(self):
@@ -355,5 +356,5 @@ class TestQuantileFunction:
         assert_allclose(quantile.x, [0, 3 / 4, 3 / 4, 1])
         assert_allclose(quantile.y, [1, 10, 100, 1000])
         assert_func_values(
-            quantile, [0, 3 / 8, 3 / 4, 7 / 8, 1], [1, 5.5, 10, 550, 1000],
+            quantile, [0, 3 / 8, 3 / 4, 7 / 8, 1], [1, 5.5, 55, 550, 1000],
         )
