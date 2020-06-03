@@ -41,12 +41,14 @@ class Distribution:
     def __eq__(self, other):
         """Return whether distribution histograms are equal."""
         if isinstance(other, Distribution):
+            self._check_compatibility(other)
             return np.array_equal(self._values, other._values)
         return NotImplemented
 
     def __add__(self, other):
         """Combine this distribution with other distribution."""
         if isinstance(other, Distribution):
+            self._check_compatibility(other)
             values = self._values + other._values
             return Distribution(self.edges, values)
         return NotImplemented
@@ -54,6 +56,7 @@ class Distribution:
     def __iadd__(self, other):
         """Combine this distribution with other distribution inplace."""
         if isinstance(other, Distribution):
+            self._check_compatibility(other)
             self._values += other._values
             return self
         return NotImplemented
@@ -217,3 +220,7 @@ class Distribution:
         :return: a :class:`.Quantile` instance
         """
         return Quantile(self._edges, self._values)
+
+    def _check_compatibility(self, dist):
+        if not np.array_equal(dist._edges, self._edges):
+            raise ValueError("Distributions have different edges.")

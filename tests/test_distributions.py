@@ -127,6 +127,16 @@ class TestDistribution:
     def test_not_equal(self):
         assert Distribution(EDGES, [1, 2, 0, 4]) != Distribution(EDGES, [1, 2, 0, 5])
 
+    def test_equal_different_edges(self):
+        with pytest.raises(ValueError) as exc_info:
+            Distribution(EDGES, [1, 2, 0, 4]) == Distribution([0, 1, 2], [1, 2, 0, 4])
+        assert str(exc_info.value) == "Distributions have different edges."
+
+    def test_equal_different_edges_count(self):
+        with pytest.raises(ValueError) as exc_info:
+            Distribution(EDGES, [1, 2, 0, 4]) == Distribution([1, 10], [1, 2, 0])
+        assert str(exc_info.value) == "Distributions have different edges."
+
     def test_add_distribution(self):
         dist = Distribution(EDGES, [1, 2, 0, 0]) + Distribution(EDGES, [0, 2, 0, 4])
         assert_array_equal(dist.values, [1, 4, 0, 4])
@@ -136,6 +146,28 @@ class TestDistribution:
         hist = dist.values
         dist += Distribution(EDGES, [0, 2, 0, 4])
         assert_array_equal(hist, [1, 4, 0, 4])
+
+    def test_add_distribution_different_edges(self):
+        with pytest.raises(ValueError) as exc_info:
+            Distribution(EDGES, [1, 2, 0, 0]) + Distribution([0, 1, 2], [0, 2, 0, 4])
+        assert str(exc_info.value) == "Distributions have different edges."
+
+    def test_add_distribution_different_edges_count(self):
+        with pytest.raises(ValueError) as exc_info:
+            Distribution(EDGES, [1, 2, 0, 0]) + Distribution([1, 10], [0, 2, 0])
+        assert str(exc_info.value) == "Distributions have different edges."
+
+    def test_add_distribution_in_place_different_edges(self):
+        dist = Distribution(EDGES, [1, 2, 0, 0])
+        with pytest.raises(ValueError) as exc_info:
+            dist += Distribution([0, 1, 2], [0, 2, 0, 4])
+        assert str(exc_info.value) == "Distributions have different edges."
+
+    def test_add_distribution_in_place_different_edges_count(self):
+        dist = Distribution(EDGES, [1, 2, 0, 0])
+        with pytest.raises(ValueError) as exc_info:
+            dist += Distribution([1, 10], [0, 2, 0])
+        assert str(exc_info.value) == "Distributions have different edges."
 
     def test_weight_of_empty(self):
         dist = Distribution(EDGES)
