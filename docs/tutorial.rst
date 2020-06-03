@@ -172,6 +172,9 @@ It provides methods for updating or combining distributions:
 
     With this setup, the first bucket counts zeros and the last bucket counts outliers.
 
+    If Distimate is used with negative metrics,
+    it can return wrong approximation for values bellow the left-most edge.
+
 
 Optional weights are supported:
 

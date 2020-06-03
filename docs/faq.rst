@@ -22,7 +22,7 @@ What is Distimate useful for?
 
 How are approximations lossy?
     CDF values at histogram edges are exact.
-    If you choose the edges wisely at round values, people will never ask for CDF at other points.
+    If you choose the edges wisely at round values, the user may never ask for CDF at other points.
 
     When plotted using Matplotlib,
     you will hardly notice a difference between a plot with 100 and 1000 points.
