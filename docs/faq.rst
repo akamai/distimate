@@ -4,7 +4,7 @@ FAQ
 
 What is Distimate useful for?
     Distimate started as a library
-    for plotting cumulative distribution functions (CDF).
+    for plotting empirical cumulative distribution functions (ECDF).
 
     It can plot CDF not only from an array of samples
     (similar to `statsmodels ECDF <https://www.statsmodels.org/stable/generated/statsmodels.distributions.empirical_distribution.ECDF.html>`_),

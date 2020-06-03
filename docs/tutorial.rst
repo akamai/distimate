@@ -24,6 +24,17 @@ Distimate supports the following functions:
 * Cumulative distribution function (CDF) - :class:`.CDF`
 * Quantile (percentile) function - :class:`.Quantile`
 
+.. note::
+
+    In many contexts, distribution functions approximated by Distimate
+    should be called *empirical* distribution functions.
+    They usually aggregate an empirical measure of a random sample.
+
+    For example, many libraries implement
+    an empirical cumulative distribution function (ECDF).
+    Distimate calls that function CDF for brevity.
+
+
 Each of the above functions can be either plotted as an object with ``.x`` and ``.y`` attributes,
 or it can be called to approximate a function value at arbitrary point.
 

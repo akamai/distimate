@@ -28,7 +28,7 @@ Features:
 
 * Histogram creation and merging
 * Probability density function (PDF)
-* Cumulative distribution function (CDF)
+* Cumulative distribution function (CDF or ECDF)
 * Quantile (percentile) function
 * Pandas integration.
 
