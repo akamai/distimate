@@ -53,7 +53,7 @@ Why does Distimate use left-open intervals (unlike NumPy)?
     Distimate puts 10 to the ``(0, 10]`` bucket.
 
     The left-open interval correspond to definition of CDF,
-    where ``cdf(x)`` includes all samples lesser than or equal to ``x``.
+    where ``cdf(x)`` includes all samples less than or equal to ``x``.
 
     This is especially important for ``cdf(0)``
     that should include all samples equal to zero.
@@ -61,7 +61,7 @@ Why does Distimate use left-open intervals (unlike NumPy)?
 
 Why does Distimate approximate left and right out-of-range values differently?
 
-    The first bucket contains items lesser than or equal to the left-most edge.
+    The first bucket contains items less than or equal to the left-most edge.
     For approximations, we assume that the items in this bucket are equal to the left-most edge.
 
     The last bucket contains items greater that the right-most edge.

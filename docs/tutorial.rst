@@ -157,10 +157,10 @@ It provides methods for updating or combining distributions:
     [1. 3. 0. 0. 0.]
 
 
-- The first histogram bucket counts items lesser than or equal to the left-most edge.
+- The first histogram bucket counts items less than or equal to the left-most edge.
 - The inner buckets count items between two edges.
   Intervals are left-open, the inner buckets count items
-  greater than their left edge and lesser than or equal to their right edge.
+  greater than their left edge and less than or equal to their right edge.
 - The last bucket counts items greater than the right-most edge.
 
 .. note::

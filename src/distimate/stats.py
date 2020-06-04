@@ -114,7 +114,7 @@ class PDF(_StatsFunction):
     distribution values. It is computed from a histogram
     by normalizing relative frequencies by bucket widths.
 
-    - For inputs lesser than the first edges,
+    - For inputs less than the first edges,
       the PDF will always return zero.
     - For inputs equal to the first edge (typically zero),
       the PDF function will return zero or NaN,
@@ -177,9 +177,9 @@ class CDF(_StatsFunction):
     and returns outputs between 0 and 1 (inclusive).
 
     ``cdf(x)`` returns a probability that a distribution
-    value will be lesser than or equal to ``.x``.
+    value will be less than or equal to ``.x``.
 
-    - For inputs lesser than the first edge,
+    - For inputs less than the first edge,
       the CDF will always return zero.
     - Function return exact values for inputs equal to histogram edges.
       Values inside histogram buckets are interpolated.
