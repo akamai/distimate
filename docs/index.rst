@@ -1,5 +1,4 @@
 
-
 Distimate documentation
 ========================
 
@@ -54,3 +53,10 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+License
+-------
+
+.. literalinclude:: ../NOTICE
+    :language: none
