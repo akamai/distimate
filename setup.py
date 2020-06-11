@@ -25,6 +25,10 @@ setup(
     author="Miloslav Pojman",
     author_email="mpojman@akamai.com",
     description="Distributions visualized",
+    keywords=[
+        "statistics", "plotting", "histogram", "distribution",
+        "CDF", "PDF", "quantile", "percentile", "Pandas", "Matplotlib",
+    ],
     license="Apache License 2.0",
     url="https://github.com/akamai/distimate",
     project_urls={
