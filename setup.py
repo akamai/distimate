@@ -21,7 +21,7 @@ with open("README.md", "r") as fp:
 
 setup(
     name="distimate",
-    version="0.1",
+    version="0.2.dev",
     author="Miloslav Pojman",
     author_email="mpojman@akamai.com",
     description="Distributions visualized",
