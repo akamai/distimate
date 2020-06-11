@@ -26,6 +26,11 @@ setup(
     author_email="mpojman@akamai.com",
     description="Distributions visualized",
     license="Apache License 2.0",
+    url="https://github.com/akamai/distimate",
+    project_urls={
+        "Documentation": "https://distimate.readthedocs.io/",
+        "Source Code": "https://github.com/akamai/distimate",
+    },
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
