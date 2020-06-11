@@ -66,6 +66,8 @@ html_theme_options = {
     'show_related': True,
     'show_relbar_bottom': True,
     'extra_nav_links': {
+        'GitHub': 'https://github.com/akamai/distimate',
+        'PyPI': 'https://pypi.org/project/distimate/',
     },
 }
 

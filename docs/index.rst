@@ -34,6 +34,10 @@ Features:
 * Quantile (percentile) function
 * Pandas integration.
 
+Distimate is hosted at `GitHub <http://github.com/akamai/distimate>`_ and
+it can be installed from `PyPI <https://pypi.org/project/distimate/>`_.
+This documentation is available online at `Read the Docs <https://distimate.readthedocs.io/>`_.
+
 
 Table of Contents
 -----------------
