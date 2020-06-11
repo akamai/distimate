@@ -49,6 +49,7 @@ Table of Contents
     api
     develop
     faq
+    license
 
 
 Indices and tables
@@ -57,10 +58,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-License
--------
-
-.. literalinclude:: ../NOTICE
-    :language: none
