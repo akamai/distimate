@@ -48,6 +48,10 @@ Table of Contents
     tutorial
     api
     develop
+
+.. toctree::
+    :maxdepth: 1
+
     faq
     license
 
