@@ -191,7 +191,7 @@ class CDF(_StatsFunction):
     and returns outputs between 0 and 1 (inclusive).
 
     ``cdf(x)`` returns a probability that a distribution
-    value will be less than or equal to ``.x``.
+    value will be less than or equal to ``x``.
 
     - For inputs less than the first edge,
       the CDF will always return zero.

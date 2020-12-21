@@ -7,14 +7,9 @@ Statistical functions
 
 Distimate can approximate common statistical functions from a histogram.
 
-.. note::
+.. seealso::
 
-    Distimate is most useful in situations
-    when it would be ineffective to retrieve a full dataset.
-
-    For example, we can easily aggregate millions of database rows
-    to 100 histogram buckets using SQL.
-    The selected 100 points will provide enough detail for smooth CDF plots.
+    :ref:`faq-use-case`
 
 
 Distimate supports the following functions:
@@ -58,75 +53,31 @@ The functions accept a number or a NumPy array-like.
 
 .. testcode::
 
-    print(cdf(-7))
     print(cdf(0))
     print(cdf(5))
     print(cdf(107))
-    print(cdf([-7, 0, 5, 107]))
+    print(cdf([0, 5, 107]))
 
 .. testoutput::
 
-    0.0
     0.4
     0.55
     nan
-    [0.   0.4  0.55  nan]
+    [0.4  0.55  nan]
 
 
-Functions are approximated from histograms.
+Functions are approximated from histograms:
 
 - The first bucket is represented by the first edge.
 - We assume that samples are uniformly distributed in inner buckets.
 - Outliers in the last bucket cannot be approximated.
 
-.. testcode::
+The implementation intelligently handles various corner cases,
+for example ambiguous quantiles.
 
-    # The first bucket counts zeros.
-    mean = distimate.mean(edges, [3, 0, 0, 0, 0])
-    print(mean)
+.. seealso::
 
-.. testoutput::
-
-    0.0
-
-.. testcode::
-
-    # The midpoint of the (0, 10] bucket is 5.
-    mean = distimate.mean(edges, [0, 7, 0, 0, 0])
-    print(mean)
-
-.. testoutput::
-
-    5.0
-
-.. testcode::
-
-    # The last bucket cannot be approximated.
-    mean = distimate.mean(edges, [0, 0, 0, 0, 13])
-    print(mean)
-
-.. testoutput::
-
-    nan
-
-
-The implementation intelligently handles various corner cases.
-In the following example, a distribution median can be anything between 10 and 50.
-
-.. testcode::
-
-    quantile = distimate.Quantile(edges, [0, 5, 0, 5, 0])
-
-    print(quantile.x, quantile.y)
-    print(quantile(0.5))
-
-.. testoutput::
-
-    [0.  0.5 0.5 1. ] [  0.  10.  50. 100.]
-    30.0
-
-A plot will contain a vertical line.
-When called, the function returns middle of possible values.
+    :ref:`faq-precision`
 
 
 Distributions
@@ -175,18 +126,11 @@ It provides methods for updating or combining distributions:
     If Distimate is used with negative metrics,
     it can return wrong approximation for values bellow the left-most edge.
 
+.. seealso::
 
-Optional weights are supported:
-
-.. testcode::
-
-    dist = distimate.Distribution(edges)
-    dist.update([0, 7, 13], [1, 2, 3])
-    print(dist.to_histogram())
-
-.. testoutput::
-
-    [1. 2. 3. 0. 0.]
+    - :ref:`faq-bucket-count`
+    - :ref:`faq-intervals`
+    - :ref:`faq-out-of-range`
 
 
 It is common to define histogram edges once and reuse them between distributions.

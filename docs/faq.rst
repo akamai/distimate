@@ -2,16 +2,19 @@
 FAQ
 ===
 
+.. _faq-use-case:
+
 What is Distimate useful for?
 -----------------------------
-Distimate started as a library
-for plotting empirical cumulative distribution functions (ECDF).
-
+Distimate started as a library for plotting (empirical) cumulative distribution functions (ECDF or CDF).
 It can plot CDF not only from an array of samples
 (similar to `statsmodels ECDF <https://www.statsmodels.org/stable/generated/statsmodels.distributions.empirical_distribution.ECDF.html>`_),
 but also from a histogram.
+
 The advantage of histograms is that they can be computed by a database,
 aggregating millions of rows to a few dozens of buckets.
+We can easily select 100 columns with histogram buckets,
+which will provide enough detail for smooth CDF plots.
 
 Having CDFs, we can ask for median or other quantiles.
 Histograms can be easily merged, allowing to estimate quantiles of grouped data.
@@ -21,8 +24,10 @@ The :class:`.Distribution` class wraps two arrays into a simple object with a ni
 The Pandas :class:`.DistributionAccessor` helps to remove unnecessary boilerplate.
 
 
-How are approximations lossy?
------------------------------
+.. _faq-precision:
+
+How precise are the approximations?
+-----------------------------------
 
 CDF values at histogram edges are exact.
 If you choose the edges wisely at round values, the user may never ask for CDF at other points.
@@ -38,6 +43,7 @@ You can look at a `paper <https://arxiv.org/abs/2001.06561>`_
 explaining a similar approach.
 
 
+.. _faq-bucket-count:
 
 Why does Distimate use more buckets than NumPy?
 -----------------------------------------------
@@ -53,6 +59,8 @@ Distimate assumes that edges are defined only once and then reused.
 With the constant edge, risk the out-of-range items cannot be eliminated.
 
 
+.. _faq-intervals:
+
 Why does Distimate use left-open intervals (unlike NumPy)?
 ----------------------------------------------------------
 
@@ -66,6 +74,8 @@ where ``cdf(x)`` includes all samples less than or equal to ``x``.
 This is especially important for ``cdf(0)``
 that should include all samples equal to zero.
 
+
+.. _faq-out-of-range:
 
 Why does Distimate approximate left and right out-of-range values differently?
 ------------------------------------------------------------------------------
